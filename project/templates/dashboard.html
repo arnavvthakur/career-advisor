@@ -1,0 +1,273 @@
+{% extends "layout.html" %}
+
+{% block title %}Dashboard - CareerPath Pro{% endblock %}
+
+{% block content %}
+    <!-- Welcome Header -->
+    <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-xl shadow-lg mb-8">
+        <div class="flex items-center space-x-4">
+            <div id="user-avatar" class="w-16 h-16 rounded-full bg-blue-500 flex-shrink-0 flex items-center justify-center text-white text-2xl font-bold border-2 border-blue-400">
+                <!-- Initials will be inserted here by JS -->
+            </div>
+            <div>
+                <h1 id="welcome-header" class="text-3xl font-bold tracking-tight">Hello!</h1>
+                <p class="text-lg font-light mt-1 opacity-90">Your career journey starts here.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Professional Summary Cards -->
+    <div id="summary-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Summary items will be dynamically inserted here by JS -->
+        <div class="bg-white p-4 rounded-xl shadow-sm flex items-center space-x-3"><div class="bg-blue-100 text-blue-600 rounded-full p-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 110-6 3 3 0 010 6z"/></svg></div><div><strong class="text-sm text-gray-500 block">Education Level</strong><span id="education-summary" class="font-bold text-lg">Loading...</span></div></div>
+        <div class="bg-white p-4 rounded-xl shadow-sm flex items-center space-x-3"><div class="bg-green-100 text-green-600 rounded-full p-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg></div><div><strong class="text-sm text-gray-500 block">Passout Year</strong><span id="passout-summary" class="font-bold text-lg">Loading...</span></div></div>
+        <div class="bg-white p-4 rounded-xl shadow-sm flex items-center space-x-3"><div class="bg-purple-100 text-purple-600 rounded-full p-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg></div><div><strong class="text-sm text-gray-500 block">Academic Interests</strong><span id="interests-summary" class="font-bold text-lg">Loading...</span></div></div>
+        <div class="bg-white p-4 rounded-xl shadow-sm flex items-center space-x-3"><div class="bg-yellow-100 text-yellow-600 rounded-full p-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg></div><div><strong class="text-sm text-gray-500 block">Location</strong><span id="location-summary" class="font-bold text-lg">Loading...</span></div></div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Main Column -->
+        <div class="md:col-span-2 space-y-8">
+            <!-- Recommendations -->
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <svg class="h-6 w-6 text-yellow-500 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-9a1 1 0 000 2h2a1 1 0 100-2h-2zm-1-3a1 1 0 112 0 1 1 0 01-2 0zm-2 6a1 1 0 11-2 0 1 1 0 012 0z" clip-rule="evenodd" /></svg>
+                    Your Personalized Recommendations
+                </h2>
+                <div id="recommendations-container">
+                    <div class="animate-pulse">
+                        <div class="h-10 bg-gray-200 rounded-lg mb-2"></div>
+                        <div class="h-10 bg-gray-200 rounded-lg"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Resources -->
+            <div class="space-y-4">
+                <h2 class="text-xl font-bold text-gray-800 mb-2">Quick Resources</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <a href="{{ url_for('main.page_courses') }}" class="group block p-4 bg-white rounded-xl shadow-md hover:shadow-lg hover:bg-green-50 transition-all duration-300 transform hover:scale-105">
+                        <h3 class="text-lg font-semibold text-gray-800 group-hover:text-green-600">Explore Courses</h3>
+                        <p class="text-gray-500 text-sm mt-1">Discover different career paths</p>
+                    </a>
+                    <a href="{{ url_for('main.page_colleges') }}" class="group block p-4 bg-white rounded-xl shadow-md hover:shadow-lg hover:bg-purple-50 transition-all duration-300 transform hover:scale-105">
+                        <h3 class="text-lg font-semibold text-gray-800 group-hover:text-purple-600">Explore Colleges</h3>
+                        <p class="text-gray-500 text-sm mt-1">Find the right institution for you</p>
+                    </a>
+                    <a href="{{ url_for('main.page_scholarships') }}" class="group block p-4 bg-white rounded-xl shadow-md hover:shadow-lg hover:bg-yellow-50 transition-all duration-300 transform hover:scale-105">
+                        <h3 class="text-lg font-semibold text-gray-800 group-hover:text-yellow-600">Scholarship Finder</h3>
+                        <p class="text-gray-500 text-sm mt-1">Discover financial aid opportunities</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Side Column -->
+        <div class="md:col-span-1 space-y-8">
+            <!-- Timeline (as a button) -->
+            <div class="bg-white p-6 rounded-xl shadow-md text-center">
+                <a href="{{ url_for('main.page_timeline') }}" class="group block">
+                    <div class="flex items-center justify-center text-purple-600 group-hover:text-purple-700 transition-colors duration-200 mb-2">
+                        <svg class="h-8 w-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-200">Upcoming Timeline</h2>
+                    <p class="text-sm text-gray-500 mt-1">View all important dates</p>
+                </a>
+            </div>
+            
+            <!-- Quiz Button -->
+            <div class="bg-white p-6 rounded-xl shadow-md text-center">
+                <a href="{{ url_for('main.page_quiz_and_recommendations') }}" class="group block">
+                    <div class="flex items-center justify-center text-blue-600 group-hover:text-blue-700 transition-colors duration-200 mb-2">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-200">Take the Quiz</h2>
+                    <p class="text-sm text-gray-500 mt-1">Get personalized recommendations</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recommendation Detail Modal -->
+    <div id="rec-detail-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center p-4 z-[60]">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h3 id="rec-detail-title" class="text-2xl font-bold text-gray-800">Recommendation Details</h3>
+                <button onclick="hideRecDetailModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="rec-detail-content" class="p-6 space-y-6">
+                <!-- Detailed content will be injected here -->
+            </div>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        window.location.href = "{{ url_for('main.page_login') }}";
+        return;
+    }
+
+    // Element References
+    const welcomeHeader = document.getElementById('welcome-header');
+    const userAvatar = document.getElementById('user-avatar');
+    const recommendationsContainer = document.getElementById('recommendations-container');
+    const educationSummary = document.getElementById('education-summary');
+    const passoutSummary = document.getElementById('passout-summary');
+    const interestsSummary = document.getElementById('interests-summary');
+    const locationSummary = document.getElementById('location-summary');
+    const recDetailModal = document.getElementById('rec-detail-modal');
+    const recDetailTitle = document.getElementById('rec-detail-title');
+    const recDetailContent = document.getElementById('rec-detail-content');
+
+    const headers = { 'Authorization': `Bearer ${token}` };
+    let allRecommendationsData = [];
+    let allCoursesData = {};
+
+    // Utility function for authenticated fetches
+    async function fetchWithAuth(url) {
+        const response = await fetch(url, { headers: headers });
+        if (response.status === 401) {
+            localStorage.removeItem('authToken');
+            window.location.href = "{{ url_for('main.page_login') }}";
+            throw new Error('Unauthorized');
+        }
+        return response;
+    }
+
+    // --- Modal Functions ---
+    const showRecDetailModal = (recTitle) => {
+        // Find the specific recommendation object from the quiz results
+        const rec = allRecommendationsData.find(r => r.title === recTitle);
+        
+        // Find the detailed course data using the recommendation title
+        let courseDetails = null;
+        if (allCoursesData) {
+            const allCoursesFlat = Object.values(allCoursesData).flatMap(pathways => Object.values(pathways)).flatMap(courseList => courseList);
+            
+            // Fix: Use a more robust search that finds a partial, case-insensitive match.
+            courseDetails = allCoursesFlat.find(c => c.title.toLowerCase().includes(recTitle.toLowerCase()));
+        }
+
+        if (!courseDetails) {
+            recDetailTitle.textContent = recTitle;
+            recDetailContent.innerHTML = `<p class="text-center text-gray-500">Full details for this recommendation are not available.</p>`;
+        } else {
+            const paths = (courseDetails.career_paths || []).map(p => `<li>${p}</li>`).join('');
+            const exams = (courseDetails.exams || []).map(e => `<li>${e}</li>`).join('');
+
+            recDetailTitle.textContent = courseDetails.title;
+            recDetailContent.innerHTML = `
+                <p class="text-gray-700 leading-relaxed">${courseDetails.description}</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t">
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-800 mb-1">Career Paths</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-600">${paths}</ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-800 mb-1">Relevant Exams</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-600">${exams}</ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        recDetailModal.classList.remove('hidden');
+        recDetailModal.classList.add('flex');
+    };
+
+    const hideRecDetailModal = () => {
+        recDetailModal.classList.add('hidden');
+        recDetailModal.classList.remove('flex');
+    };
+    window.hideRecDetailModal = hideRecDetailModal;
+
+    // --- Data Fetching Functions ---
+    async function fetchProfile() {
+        try {
+            const profileResponse = await fetchWithAuth('/api/profile');
+            const profileData = await profileResponse.json();
+            if (profileData.profile) {
+                welcomeHeader.textContent = `Hello, ${profileData.profile.name}!`;
+                const initials = profileData.profile.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                userAvatar.textContent = initials;
+                educationSummary.textContent = profileData.profile.education || 'N/A';
+                passoutSummary.textContent = profileData.profile.passout_year || 'N/A';
+                interestsSummary.textContent = profileData.profile.academic_interests || 'N/A';
+                locationSummary.textContent = profileData.profile.address || 'N/A';
+            }
+        } catch (error) {
+            console.error('Error fetching profile:', error);
+        }
+    }
+
+    async function fetchAllCourseData() {
+        try {
+            const coursesResponse = await fetchWithAuth('/api/courses');
+            if (coursesResponse.ok) {
+                allCoursesData = await coursesResponse.json();
+            } else {
+                console.error('Failed to fetch all courses for details:', coursesResponse.status);
+            }
+        } catch(error) {
+            console.error('Error fetching all courses for details:', error);
+        }
+    }
+
+    async function fetchRecommendations() {
+        try {
+            const res = await fetchWithAuth('/api/last-quiz-result');
+            const data = await res.json();
+            
+            recommendationsContainer.innerHTML = ''; // Clear loading state
+            if (data.has_result && data.result.recommendations && data.result.recommendations.primary.length > 0) {
+                allRecommendationsData = data.result.recommendations.primary;
+                const recList = document.createElement('div');
+                recList.className = 'space-y-4';
+                allRecommendationsData.forEach(rec => {
+                    const recCard = document.createElement('div');
+                    recCard.className = 'p-4 border border-blue-200 bg-blue-50 rounded-lg shadow-sm';
+                    recCard.innerHTML = `
+                        <h3 class="font-bold text-lg text-blue-800">${rec.title}</h3>
+                        <p class="text-sm text-gray-600 mt-2">${rec.description.substring(0, 100)}...</p>
+                        <button class="learn-more-btn mt-3 px-4 py-2 rounded-lg font-semibold text-blue-600 bg-blue-100 hover:bg-blue-200 transition-colors" data-rec-title="${rec.title}">
+                            Learn More
+                        </button>
+                    `;
+                    recList.appendChild(recCard);
+                });
+                recommendationsContainer.appendChild(recList);
+
+                document.querySelectorAll('.learn-more-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        showRecDetailModal(e.target.dataset.recTitle);
+                    });
+                });
+
+            } else {
+                recommendationsContainer.innerHTML = '<p class="text-gray-500 text-center">Take the quiz to get your personalized recommendations!</p>';
+            }
+        } catch (error) {
+            console.error('Error fetching recommendations:', error);
+            recommendationsContainer.innerHTML = '<p class="text-red-500 text-center">Failed to load recommendations.</p>';
+        }
+    }
+    
+    // --- Initial data fetching
+    async function initializeDashboard() {
+        await fetchProfile();
+        await fetchAllCourseData();
+        await fetchRecommendations();
+    }
+
+    // Initialize all data fetching
+    initializeDashboard();
+});
+</script>
+{% endblock %}

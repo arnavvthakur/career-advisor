@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Chatbot Assistant</h2>
+<div class="content-wrapper">
+    <div id="chat-history" style="max-height: 60vh; overflow-y: auto; margin-bottom: 20px;">
+        <div class="data-card"><div class="card-value">Hello! How can I help you today?</div></div>
+    </div>
+    <form id="chat-form">
+        <input type="text" id="chat-question" placeholder="Ask a question..." required style="flex-grow:1;">
+        <button type="submit">Send</button>
+    </form>
+</div>
+<script>
+    const chatHistory = document.getElementById('chat-history');
+    document.getElementById('chat-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = document.getElementById('chat-question');
+        const question = input.value;
+        if (!question.trim()) return;
+
+        const userCard = document.createElement('div');
+        userCard.className = 'data-card';
+        userCard.innerHTML = `<div class="card-key">You</div><div class="card-value">${question}</div>`;
+        chatHistory.appendChild(userCard);
+
+        fetch('/api/chatbot/query', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question })
+        })
+        .then(res => res.json())
+        .then(data => {
+            const botCard = document.createElement('div');
+            botCard.className = 'data-card';
+            botCard.innerHTML = `<div class="card-key">Assistant</div><div class="card-value">${data.answer}</div>`;
+            chatHistory.appendChild(botCard);
+            input.value = '';
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,242 @@
+{% extends "layout.html" %}
+
+{% block title %}Scholarship Directory - CareerPath Pro{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-xl shadow-lg mb-8 text-center">
+        <h1 class="text-3xl font-bold tracking-tight">Scholarship Directory</h1>
+        <p class="text-lg font-light mt-2 opacity-90">Find financial aid opportunities based on your needs.</p>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="mb-6 flex flex-wrap items-center justify-center gap-4">
+        <button class="filter-btn bg-blue-600 text-white font-semibold px-6 py-3 rounded-full shadow-md transition-colors duration-200" data-filter="All">All Scholarships</button>
+        <button class="filter-btn bg-white text-gray-800 font-semibold px-6 py-3 rounded-full shadow-md hover:bg-blue-500 hover:text-white transition-colors duration-200" data-filter="National">National</button>
+        <button class="filter-btn bg-white text-gray-800 font-semibold px-6 py-3 rounded-full shadow-md hover:bg-blue-500 hover:text-white transition-colors duration-200" data-filter="State">State/UT</button>
+    </div>
+
+    <!-- State Dropdown for Filtering -->
+    <div id="state-filter-container" class="mb-6 hidden justify-center">
+        <div class="relative inline-block text-gray-700 w-full max-w-sm">
+            <select id="state-select" class="block w-full px-4 py-2 pr-8 rounded-lg border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 appearance-none">
+                <option value="">Select a State/UT...</option>
+                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                <option value="Assam">Assam</option>
+                <option value="Bihar">Bihar</option>
+                <option value="Chhattisgarh">Chhattisgarh</option>
+                <option value="Goa">Goa</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="Haryana">Haryana</option>
+                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                <option value="Jharkhand">Jharkhand</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Kerala">Kerala</option>
+                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Manipur">Manipur</option>
+                <option value="Meghalaya">Meghalaya</option>
+                <option value="Mizoram">Mizoram</option>
+                <option value="Nagaland">Nagaland</option>
+                <option value="Odisha">Odisha</option>
+                <option value="Punjab">Punjab</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="Sikkim">Sikkim</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Telangana">Telangana</option>
+                <option value="Tripura">Tripura</option>
+                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                <option value="Uttarakhand">Uttarakhand</option>
+                <option value="West Bengal">West Bengal</option>
+                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                <option value="Chandigarh">Chandigarh</option>
+                <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Ladakh">Ladakh</option>
+                <option value="Lakshadweep">Lakshadweep</option>
+                <option value="Puducherry">Puducherry</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.05 6.879 4.636 8.293z"/></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Form -->
+    <form id="search-form" class="mb-8 max-w-xl mx-auto">
+        <div class="flex">
+            <input type="text" id="search-query" placeholder="Search by name or eligibility..." class="w-full px-4 py-2 border border-gray-300 rounded-l-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <button type="submit" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-r-lg hover:bg-blue-700 transition-colors">Search</button>
+        </div>
+    </form>
+
+    <!-- Display Scholarship Results -->
+    <div id="scholarship-list" class="space-y-4">
+        <p class="text-center text-gray-500">Loading scholarships...</p>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const scholarshipList = document.getElementById('scholarship-list');
+        const searchForm = document.getElementById('search-form');
+        const searchQuery = document.getElementById('search-query');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const stateFilterContainer = document.getElementById('state-filter-container');
+        const stateSelect = document.getElementById('state-select');
+
+        let allScholarships = [];
+        let activeFilter = 'All';
+        
+        // This mapping makes the state filtering much more robust
+        const stateKeywords = {
+            'Andhra Pradesh': ['andhra pradesh', 'ap', 'telugu'],
+            'Arunachal Pradesh': ['arunachal pradesh'],
+            'Assam': ['assam'],
+            'Bihar': ['bihar'],
+            'Chhattisgarh': ['chhattisgarh'],
+            'Goa': ['goa'],
+            'Gujarat': ['gujarat'],
+            'Haryana': ['haryana'],
+            'Himachal Pradesh': ['himachal pradesh'],
+            'Jammu and Kashmir': ['jammu and kashmir', 'j&k', 'jk'],
+            'Jharkhand': ['jharkhand'],
+            'Karnataka': ['karnataka', 'bangalore'],
+            'Kerala': ['kerala'],
+            'Madhya Pradesh': ['madhya pradesh', 'mp'],
+            'Maharashtra': ['maharashtra', 'mumbai', 'pune'],
+            'Manipur': ['manipur'],
+            'Meghalaya': ['meghalaya'],
+            'Mizoram': ['mizoram'],
+            'Nagaland': ['nagaland'],
+            'Odisha': ['odisha'],
+            'Punjab': ['punjab'],
+            'Rajasthan': ['rajasthan'],
+            'Sikkim': ['sikkim'],
+            'Tamil Nadu': ['tamil nadu', 'tn', 'chennai'],
+            'Telangana': ['telangana'],
+            'Tripura': ['tripura'],
+            'Uttar Pradesh': ['uttar pradesh', 'up'],
+            'Uttarakhand': ['uttarakhand'],
+            'West Bengal': ['west bengal', 'wb'],
+            'Andaman and Nicobar Islands': ['andaman and nicobar islands'],
+            'Chandigarh': ['chandigarh'],
+            'Dadra and Nagar Haveli and Daman and Diu': ['dadra and nagar haveli', 'daman and diu'],
+            'Delhi': ['delhi', 'new delhi'],
+            'Ladakh': ['ladakh'],
+            'Lakshadweep': ['lakshadweep'],
+            'Puducherry': ['puducherry']
+        };
+
+        async function fetchScholarships() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = "{{ url_for('main.page_login') }}";
+                return;
+            }
+            
+            try {
+                scholarshipList.innerHTML = '<p class="text-center text-gray-500">Searching...</p>';
+                
+                const response = await fetch('/api/scholarships/search', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch scholarships');
+                
+                const data = await response.json();
+                allScholarships = data.scholarships;
+                filterAndRenderScholarships();
+            } catch (error) {
+                scholarshipList.innerHTML = '<p class="text-center text-red-500">Could not load scholarships. Please try again.</p>';
+                console.error('Error fetching scholarships:', error);
+            }
+        }
+        
+        function filterAndRenderScholarships() {
+            let filteredScholarships = allScholarships;
+            
+            if (activeFilter === 'National') {
+                filteredScholarships = allScholarships.filter(s => s.eligibility.toLowerCase().includes('national') || s.eligibility.toLowerCase().includes('india'));
+            } else if (activeFilter === 'State') {
+                const selectedState = stateSelect.value;
+                if (selectedState && selectedState !== "") {
+                    const keywords = stateKeywords[selectedState] || [selectedState.toLowerCase()];
+                    filteredScholarships = allScholarships.filter(s => {
+                        const eligibilityText = s.eligibility.toLowerCase();
+                        return keywords.some(keyword => eligibilityText.includes(keyword));
+                    });
+                } else {
+                    filteredScholarships = [];
+                }
+            }
+
+            const query = searchQuery.value.toLowerCase();
+            if (query) {
+                filteredScholarships = filteredScholarships.filter(s => 
+                    s.title.toLowerCase().includes(query) || 
+                    s.eligibility.toLowerCase().includes(query)
+                );
+            }
+
+            renderScholarships(filteredScholarships);
+        }
+
+        function renderScholarships(scholarships) {
+            scholarshipList.innerHTML = '';
+            if (scholarships && scholarships.length > 0) {
+                scholarships.forEach(scholarship => {
+                    const scholarshipEl = document.createElement('div');
+                    scholarshipEl.className = 'p-6 bg-gray-50 border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200';
+                    scholarshipEl.innerHTML = `
+                        <h3 class="font-bold text-xl text-gray-800 mb-2">${scholarship.title}</h3>
+                        <p class="text-sm text-gray-600 mt-1"><strong>Eligibility:</strong> ${scholarship.eligibility}</p>
+                        <p class="text-sm text-gray-600"><strong>Deadline:</strong> ${scholarship.deadline}</p>
+                        <a href="${scholarship.link}" target="_blank" class="text-blue-600 hover:underline text-sm font-semibold mt-4 inline-block">Learn More & Apply</a>
+                    `;
+                    scholarshipList.appendChild(scholarshipEl);
+                });
+            } else {
+                const noResultsMessage = activeFilter === 'State' && stateSelect.value === ''
+                    ? '<p class="text-center text-gray-500">Select a state to see available scholarships.</p>'
+                    : '<p class="text-center text-gray-500">No scholarships found matching your criteria.</p>';
+                scholarshipList.innerHTML = noResultsMessage;
+            }
+        }
+        
+        function setActiveFilter(button) {
+            filterButtons.forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('bg-white', 'text-gray-800');
+            });
+            button.classList.remove('bg-white', 'text-gray-800');
+            button.classList.add('bg-blue-600', 'text-white');
+            activeFilter = button.dataset.filter;
+            
+            if (activeFilter === 'State') {
+                stateFilterContainer.classList.remove('hidden');
+                filterAndRenderScholarships();
+            } else {
+                stateFilterContainer.classList.add('hidden');
+                stateSelect.value = '';
+                filterAndRenderScholarships();
+            }
+        }
+
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            filterAndRenderScholarships();
+        });
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', (e) => setActiveFilter(e.target));
+        });
+
+        stateSelect.addEventListener('change', filterAndRenderScholarships);
+
+        fetchScholarships();
+    });
+</script>
+{% endblock %}

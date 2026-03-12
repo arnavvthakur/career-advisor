@@ -1,0 +1,220 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-wrapper">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-xl shadow-lg mb-8">
+        <h1 class="text-3xl font-bold mb-2">My Profile</h1>
+        <p class="text-lg font-light opacity-90">View and manage your personal and academic information.</p>
+    </div>
+
+    <!-- Main Profile Container -->
+    <div id="profile-container" class="bg-white p-6 sm:p-8 rounded-xl shadow-lg w-full max-w-5xl mx-auto my-8">
+        <!-- Loading State -->
+        <div id="loading-state" class="text-center text-gray-500 py-16">
+            <p>Loading your profile...</p>
+        </div>
+        
+        <!-- Main Content (hidden until data loads) -->
+        <div id="profile-content" class="hidden">
+            <!-- Profile View & Form will be rendered here by JS -->
+        </div>
+
+        <!-- Action Buttons -->
+        <div id="action-buttons" class="hidden mt-8 pt-6 border-t border-gray-200 flex justify-end gap-4">
+            <button id="cancel-button" class="hidden bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-full transition-colors">Cancel</button>
+            <button id="edit-save-button" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-full shadow-lg transition-transform duration-300 transform hover:scale-105">
+                Edit Profile
+            </button>
+        </div>
+
+        <!-- Message container -->
+        <div id="message-container" class="mt-4 text-center text-sm font-medium"></div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const loadingState = document.getElementById('loading-state');
+        const profileContent = document.getElementById('profile-content');
+        const actionButtons = document.getElementById('action-buttons');
+        const editSaveButton = document.getElementById('edit-save-button');
+        const cancelButton = document.getElementById('cancel-button');
+        const messageContainer = document.getElementById('message-container');
+
+        let currentProfileData = null;
+        let isEditing = false;
+        
+        const calculateAge = (dob) => {
+            if (!dob) return 'N/A';
+            const birthDate = new Date(dob);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        };
+
+        const displayProfileDetails = (profile) => {
+            const age = calculateAge(profile.dob);
+            const academicInterests = profile.academic_interests ? profile.academic_interests.split(',').map(item => `<span class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded-full">${item.trim()}</span>`).join('') : 'N/A';
+            
+            profileContent.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Left Column: Avatar and Name -->
+                    <div class="lg:col-span-1 flex flex-col items-center text-center p-6 bg-gray-50 rounded-lg">
+                        <div class="w-32 h-32 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden mb-4 border-4 border-white shadow-md">
+                            <svg class="w-16 h-16 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900">${profile.name || 'N/A'}</h2>
+                        <p class="text-gray-500">${profile.email || 'N/A'}</p>
+                    </div>
+
+                    <!-- Right Column: Details -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Personal Details -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-4">Personal Information</h3>
+                            <div class="grid grid-cols-2 gap-4 text-gray-700">
+                                <div><strong>Age:</strong> ${age}</div>
+                                <div><strong>Gender:</strong> ${profile.gender || 'N/A'}</div>
+                                <div><strong>Date of Birth:</strong> ${profile.dob ? new Date(profile.dob).toLocaleDateString('en-GB') : 'N/A'}</div>
+                                <div><strong>Phone:</strong> ${profile.phone || 'N/A'}</div>
+                                <div class="col-span-2"><strong>Address:</strong> ${profile.address || 'N/A'}</div>
+                            </div>
+                        </div>
+
+                        <!-- Academic Details -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-4">Academic Background</h3>
+                            <div class="grid grid-cols-2 gap-4 text-gray-700">
+                                <div><strong>Education Level:</strong> ${profile.education || 'N/A'}</div>
+                                <div><strong>Passout Year:</strong> ${profile.passout_year || 'N/A'}</div>
+                                <div class="col-span-2"><strong>Academic Interests:</strong> <div class="mt-1 flex flex-wrap gap-2">${academicInterests}</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
+
+        const displayProfileForm = (profile) => {
+            profileContent.innerHTML = `
+                <form id="profile-form" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div><label class="block text-sm font-medium text-gray-700">Name</label><input type="text" name="name" value="${profile.name || ''}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Email</label><input type="email" name="email" value="${profile.email || ''}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100" disabled></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div><label class="block text-sm font-medium text-gray-700">Date of Birth</label><input type="date" name="dob" value="${profile.dob || ''}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Gender</label>
+                            <select name="gender" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                <option ${!profile.gender ? 'selected' : ''}>Select...</option>
+                                <option value="Male" ${profile.gender === 'Male' ? 'selected' : ''}>Male</option>
+                                <option value="Female" ${profile.gender === 'Female' ? 'selected' : ''}>Female</option>
+                                <option value="Other" ${profile.gender === 'Other' ? 'selected' : ''}>Other</option>
+                                <option value="Prefer not to say" ${profile.gender === 'Prefer not to say' ? 'selected' : ''}>Prefer not to say</option>
+                            </select>
+                        </div>
+                        <div><label class="block text-sm font-medium text-gray-700">Phone</label><input type="tel" name="phone" value="${profile.phone || ''}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></div>
+                    </div>
+                    <div><label class="block text-sm font-medium text-gray-700">Address</label><textarea name="address" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">${profile.address || ''}</textarea></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div><label class="block text-sm font-medium text-gray-700">Education Level</label><input type="text" name="education" value="${profile.education || ''}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Stream</label><input type="text" name="stream" value="${profile.stream || ''}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Passout Year</label><input type="number" name="passout_year" value="${profile.passout_year || ''}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></div>
+                    </div>
+                    <div><label class="block text-sm font-medium text-gray-700">Academic Interests (comma-separated)</label><input type="text" name="academic_interests" value="${profile.academic_interests || ''}" placeholder="e.g., Physics, History, AI" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></div>
+                </form>
+            `;
+        };
+        
+        const fetchProfileData = async () => {
+            try {
+                const response = await fetchWithAuth('/api/profile');
+                if (!response.ok) throw new Error('Failed to fetch profile.');
+                const data = await response.json();
+                currentProfileData = data.profile;
+                
+                if (currentProfileData) {
+                    displayProfileDetails(currentProfileData);
+                    loadingState.classList.add('hidden');
+                    profileContent.classList.remove('hidden');
+                    actionButtons.classList.remove('hidden');
+                } else {
+                    loadingState.textContent = 'Could not find profile data.';
+                }
+            } catch (err) {
+                loadingState.textContent = `Error: ${err.message}`;
+            }
+        };
+
+        const updateProfile = async () => {
+            const form = document.getElementById('profile-form');
+            if (!form) return;
+
+            const formData = new FormData(form);
+            const updatedData = Object.fromEntries(formData.entries());
+            
+            editSaveButton.disabled = true;
+            editSaveButton.textContent = 'Saving...';
+            messageContainer.textContent = '';
+
+            try {
+                const response = await fetchWithAuth('/api/profile', {
+                    method: 'PUT',
+                    body: JSON.stringify(updatedData),
+                });
+                const result = await response.json();
+                
+                if (!response.ok) throw new Error(result.error || 'Update failed');
+
+                messageContainer.className = "text-green-600";
+                messageContainer.textContent = result.message;
+                
+                // Switch back to view mode
+                isEditing = false;
+                toggleView();
+                await fetchProfileData(); // Refresh data from server
+
+            } catch (err) {
+                messageContainer.className = "text-red-600";
+                messageContainer.textContent = `Error: ${err.message}`;
+            } finally {
+                editSaveButton.disabled = false;
+            }
+        };
+
+        const toggleView = () => {
+            if (isEditing) {
+                displayProfileForm(currentProfileData);
+                editSaveButton.textContent = 'Save Changes';
+                cancelButton.classList.remove('hidden');
+            } else {
+                displayProfileDetails(currentProfileData);
+                editSaveButton.textContent = 'Edit Profile';
+                cancelButton.classList.add('hidden');
+            }
+        };
+
+        editSaveButton.addEventListener('click', () => {
+            if (isEditing) {
+                updateProfile();
+            } else {
+                isEditing = true;
+                toggleView();
+            }
+        });
+
+        cancelButton.addEventListener('click', () => {
+            isEditing = false;
+            messageContainer.textContent = '';
+            toggleView();
+        });
+
+        // Initial Load
+        fetchProfileData();
+    });
+</script>
+{% endblock %}

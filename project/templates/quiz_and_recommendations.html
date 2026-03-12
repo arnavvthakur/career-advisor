@@ -1,0 +1,442 @@
+{% extends "layout.html" %}
+
+{% block title %}Career Recommendation Quiz{% endblock %}
+
+{% block content %}
+<style>
+    /* Styles for the question transition animation */
+    .question-content {
+        transition: opacity 0.2s ease-in-out;
+    }
+    .question-content.fade-out {
+        opacity: 0;
+    }
+</style>
+
+<div class="content-wrapper">
+    <div id="quiz-container" class="bg-white p-6 sm:p-8 rounded-xl shadow-md max-w-5xl mx-auto">
+        
+        <!-- Add a loading state for checking previous results -->
+        <div id="step-loading" class="text-center p-8">
+            <p class="text-gray-600">Loading your quiz data...</p>
+        </div>
+
+        <!-- Step 1: Education Level Selection (Improved UI and Text) -->
+        <div id="step-education" class="hidden text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Career Recommendation Quiz</h2>
+            <p class="text-gray-600 mb-8">This quiz helps you discover career paths that match your interests and skills.</p>
+            
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8 text-left">
+                <h3 class="font-semibold text-lg text-gray-700 mb-2">How It Works:</h3>
+                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                    <li>Answer a series of multiple-choice questions based on your interests.</li>
+                    <li>Get personalized recommendations for your future career path.</li>
+                </ul>
+            </div>
+
+            <p class="font-semibold text-gray-700 mb-4">Please select the assessment relevant to your recent milestone:</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button data-level="post10" class="education-btn w-full sm:w-auto px-8 py-4 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 transform hover:scale-105">
+                    For Students After Class 10
+                </button>
+                <button data-level="post12" class="education-btn w-full sm:w-auto px-8 py-4 bg-gray-200 text-gray-800 font-bold rounded-lg hover:bg-gray-300 transition-colors">
+                    For Students After Class 12
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Stream Selection (for Class 12) -->
+        <div id="step-stream" class="hidden text-center">
+            <div class="flex justify-between items-center mb-6">
+                <button id="back-to-education-btn" class="p-2 rounded-md hover:bg-gray-200 transition-colors text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                </button>
+                <h2 class="text-2xl font-bold text-gray-800">Select Your Stream</h2>
+                <div class="w-8"></div> <!-- Spacer to align with back button -->
+            </div>
+            <p class="text-gray-600 mb-6">Please select your stream in Class 12 to get relevant questions.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <button data-stream="science_pcm" class="stream-btn p-4 border rounded-lg hover:bg-gray-100 font-semibold">Science (PCM)</button>
+                <button data-stream="science_pcb" class="stream-btn p-4 border rounded-lg hover:bg-gray-100 font-semibold">Science (PCB)</button>
+                <button data-stream="science_pcmb" class="stream-btn p-4 border rounded-lg hover:bg-gray-100 font-semibold">Science (PCMB)</button>
+                <button data-stream="commerce" class="stream-btn p-4 border rounded-lg hover:bg-gray-100 font-semibold">Commerce</button>
+                <button data-stream="arts" class="stream-btn p-4 border rounded-lg hover:bg-gray-100 font-semibold">Arts</button>
+            </div>
+        </div>
+
+        <!-- Step 3: Main Quiz Interface -->
+        <div id="step-quiz" class="hidden">
+            <h2 id="question-title" class="text-2xl font-bold text-gray-800 mb-4 text-center">Assessment Questions</h2>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+                <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="w-full md:w-2/3">
+                    <div id="questions-container" class="question-content"></div>
+                    <div class="mt-8 flex justify-between items-center">
+                        <button id="prev-btn" class="px-6 py-2 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300">Previous</button>
+                        <span id="progress-text" class="text-sm text-gray-500 font-medium"></span>
+                        <button id="next-btn" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700">Next</button>
+                        <button id="submit-quiz-btn" class="hidden px-8 py-3 bg-green-600 text-white font-bold rounded-lg shadow-md hover:bg-green-700">Submit & See Results</button>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/3 p-4 bg-gray-50 rounded-lg border">
+                    <h3 class="font-bold text-gray-700 mb-4 text-center">Question Index</h3>
+                    <div id="question-index" class="grid grid-cols-5 gap-2"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Step 4: Professional Results Page -->
+        <div id="step-results" class="hidden">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Your Personalized Results</h2>
+            <div id="results-scores" class="mb-8"></div>
+            <div id="primary-recs-container" class="mb-8"></div>
+            <div id="secondary-recs-container" class="mb-8"></div>
+            <div id="next-steps-container"></div>
+            <div class="text-center mt-8 pt-6 border-t">
+                <button id="retake-quiz-btn" class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                    Retake Quiz
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // DOM Elements
+    const steps = {
+        loading: document.getElementById('step-loading'),
+        education: document.getElementById('step-education'),
+        stream: document.getElementById('step-stream'),
+        quiz: document.getElementById('step-quiz'),
+        results: document.getElementById('step-results'),
+    };
+    const questionsContainer = document.getElementById('questions-container');
+    const questionIndexContainer = document.getElementById('question-index');
+    const questionTitle = document.getElementById('question-title');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const submitBtn = document.getElementById('submit-quiz-btn');
+    const retakeBtn = document.getElementById('retake-quiz-btn');
+    const progressText = document.getElementById('progress-text');
+    const progressBar = document.getElementById('progress-bar');
+    const resultsScoresContainer = document.getElementById('results-scores');
+    const primaryRecsContainer = document.getElementById('primary-recs-container');
+    const secondaryRecsContainer = document.getElementById('secondary-recs-container');
+    const nextStepsContainer = document.getElementById('next-steps-container');
+    const backToEducationBtn = document.getElementById('back-to-education-btn');
+    
+    // State and Data
+    let currentQuestionIndex = 0, activeQuestions = [], userAnswers = {}, educationLevel = null, stream = null;
+    const questions = {
+        post10: [
+            { id: 1, text: "What do you enjoy doing most in your spare time?", options: { A: { text: "Solving puzzles or playing strategy games.", category: 'PCM' }, B: { text: "Reading about animals, plants, or the human body.", category: 'PCB' }, C: { text: "Managing your pocket money or budgeting.", category: 'Commerce' }, D: { text: "Writing stories, drawing, or listening to music.", category: 'Arts' }}},
+            { id: 2, text: "Which subjects do you find most interesting?", options: { A: { text: "Physics and Mathematics.", category: 'PCM' }, B: { text: "Biology and Chemistry.", category: 'PCB' }, C: { text: "Economics and Business.", category: 'Commerce' }, D: { text: "History and Literature.", category: 'Arts' }}},
+            { id: 3, text: "What kind of book or movie genre do you prefer?", options: { A: { text: "Science fiction.", category: 'PCM' }, B: { text: "Nature documentaries.", category: 'PCB' }, C: { text: "Business biographies.", category: 'Commerce' }, D: { text: "Historical dramas.", category: 'Arts' }}},
+            { id: 4, text: "What would you prefer for a school project?", options: { A: { text: "Build a robotic model.", category: 'PCM' }, B: { text: "Conduct an experiment on plants.", category: 'PCB' }, C: { text: "Create a business plan.", category: 'Commerce' }, D: { text: "Write a play.", category: 'Arts' }}},
+            { id: 5, text: "What job sounds most appealing?", options: { A: { text: "Engineer or software developer.", category: 'PCM' }, B: { text: "Doctor or researcher.", category: 'PCB' }, C: { text: "Accountant or manager.", category: 'Commerce' }, D: { text: "Journalist or designer.", category: 'Arts' }}},
+            { id: 6, text: "How do you approach problems?", options: { A: { text: "With logic and data.", category: 'PCM' }, B: { text: "By understanding natural explanations.", category: 'PCB' }, C: { text: "By finding the most efficient path.", category: 'Commerce' }, D: { text: "With creativity and human perspective.", category: 'Arts' }}},
+            { id: 7, text: "Which activity is most fulfilling?", options: { A: { text: "Building or fixing things.", category: 'PCM' }, B: { text: "Caring for a pet or plants.", category: 'PCB' }, C: { text: "Negotiating a good deal.", category: 'Commerce' }, D: { text: "Expressing ideas in writing.", category: 'Arts' }}},
+            { id: 8, text: "Which school club would you join?", options: { A: { text: "Science Club.", category: 'PCM' }, B: { text: "Environmental Club.", category: 'PCB' }, C: { text: "Debate Club.", category: 'Commerce' }, D: { text: "Drama Club.", category: 'Arts' }}},
+            { id: 9, text: "What would you rather create?", options: { A: { text: "A technical plan.", category: 'PCM' }, B: { text: "A health presentation.", category: 'PCB' }, C: { text: "A financial report.", category: 'Commerce' }, D: { text: "An artistic portfolio.", category: 'Arts' }}},
+            { id: 10, text: "What's your idea of success?", options: { A: { text: "Inventing new technology.", category: 'PCM' }, B: { text: "Discovering a cure.", category: 'PCB' }, C: { text: "Building a successful company.", category: 'Commerce' }, D: { text: "Creating inspiring art.", category: 'Arts' }}},
+            { id: 11, text: "What's your ideal weekend?", options: { A: { text: "Learning to code.", category: 'PCM' }, B: { text: "Volunteering at an animal shelter.", category: 'PCB' }, C: { text: "Researching stocks.", category: 'Commerce' }, D: { text: "Visiting a museum.", category: 'Arts' }}},
+            { id: 12, text: "How do you handle a complex task?", options: { A: { text: "Break it down into logical steps.", category: 'PCM' }, B: { text: "Research all the details first.", category: 'PCB' }, C: { text: "Plan the resources and process.", category: 'Commerce' }, D: { text: "Think outside the box.", category: 'Arts' }}},
+            { id: 13, text: "What do you watch online?", options: { A: { text: "Tech reviews.", category: 'PCM' }, B: { text: "Medical videos.", category: 'PCB' }, C: { text: "Business analysis.", category: 'Commerce' }, D: { text: "History documentaries.", category: 'Arts' }}},
+            { id: 14, text: "Which school event would you help with?", options: { A: { text: "Tech and sound setup.", category: 'PCM' }, B: { text: "Health fair.", category: 'PCB' }, C: { text: "Budgeting and finance.", category: 'Commerce' }, D: { text: "Art exhibition.", category: 'Arts' }}},
+            { id: 15, text: "What motivates you most?", options: { A: { text: "Solving a difficult problem.", category: 'PCM' }, B: { text: "Helping living things.", category: 'PCB' }, C: { text: "Leading and managing people.", category: 'Commerce' }, D: { text: "Expressing my thoughts.", category: 'Arts' }}}
+        ],
+        post12: {
+            science_pcm: [
+                { id: 16, text: "When faced with a complex problem, what is your first step?", options: { A: { text: "Analyze data and break it down into logical steps.", category: 'Engineering' }, B: { text: "Research the fundamental principles behind it.", category: 'B.Sc.' }, C: { text: "Create a plan and think about the design and structure.", category: 'Architecture' }, D: { text: "Lead a team and manage resources to get it done.", category: 'Management' }, E: { text: "Consider all possible legal and ethical implications.", category: 'Law' }}},
+                { id: 17, text: "What kind of projects do you enjoy the most?", options: { A: { text: "Building something tangible or creating a functional system.", category: 'Engineering' }, B: { text: "Doing a deep dive into a topic to discover new facts.", category: 'B.Sc.' }, C: { text: "Designing and creating a blueprint or a visual plan.", category: 'Architecture' }, D: { text: "Organizing an event or managing a team.", category: 'Management' }, E: { text: "Debating a topic and finding strong arguments.", category: 'Law' }}},
+                { id: 18, text: "What motivates you the most?", options: { A: { text: "The challenge of solving a complex technical puzzle.", category: 'Engineering' }, B: { text: "The thrill of uncovering new knowledge.", category: 'B.Sc.' }, C: { text: "Seeing a design or idea become a reality.", category: 'Architecture' }, D: { text: "The opportunity to lead and achieve financial success.", category: 'Management' }, E: { text: "The ability to argue for what is right.", category: 'Law' }}},
+                { id: 19, text: "What kind of content do you prefer to watch online?", options: { A: { text: "Tech reviews or coding tutorials.", category: 'Engineering' }, B: { text: "Science documentaries or research presentations.", category: 'B.Sc.' }, C: { text: "Videos on urban planning or interior design.", category: 'Architecture' }, D: { text: "Business podcasts or startup stories.", category: 'Management' }, E: { text: "Debates or legal case analysis.", category: 'Law' }}},
+                { id: 20, text: "What is your ideal work environment?", options: { A: { text: "A lab or a tech company office.", category: 'Engineering' }, B: { text: "A university or research institution.", category: 'B.Sc.' }, C: { text: "An office with design software and blueprints.", category: 'Architecture' }, D: { text: "A corporate office managing a team.", category: 'Management' }, E: { text: "A legal firm or courtroom.", category: 'Law' }}},
+                { id: 21, text: "Which of these activities comes most naturally to you?", options: { A: { text: "Applying mathematical formulas to solve problems.", category: 'Engineering' }, B: { text: "Exploring a topic in great depth.", category: 'B.Sc.' }, C: { text: "Visualizing how different elements fit together.", category: 'Architecture' }, D: { text: "Influencing and persuading people.", category: 'Management' }, E: { text: "Reading and interpreting dense text.", category: 'Law' }}},
+                { id: 22, text: "What kind of a leader would you be in a group project?", options: { A: { text: "The technical expert who finds the solution.", category: 'Engineering' }, B: { text: "The researcher who provides the data.", category: 'B.Sc.' }, C: { text: "The visionary who plans the design.", category: 'Architecture' }, D: { text: "The manager who keeps everyone organized.", category: 'Management' }, E: { text: "The one who ensures all rules are followed.", category: 'Law' }}},
+                { id: 23, text: "What kind of impact do you want to have on the world?", options: { A: { text: "Invent new technology that improves lives.", category: 'Engineering' }, B: { text: "Discover new knowledge that advances science.", category: 'B.Sc.' }, C: { text: "Design spaces that are functional and beautiful.", category: 'Architecture' }, D: { text: "Create jobs and build a successful business.", category: 'Management' }, E: { text: "Ensure that justice and fairness prevail.", category: 'Law' }}},
+                { id: 24, text: "What kind of skills do you want to develop?", options: { A: { text: "Advanced programming and technical skills.", category: 'Engineering' }, B: { text: "In-depth knowledge of a scientific field.", category: 'B.Sc.' }, C: { text: "Graphic design and artistic skills.", category: 'Architecture' }, D: { text: "Public speaking and leadership skills.", category: 'Management' }, E: { text: "Legal analysis and argumentation skills.", category: 'Law' }}},
+                { id: 25, text: "What kind of content do you prefer to create?", options: { A: { text: "A detailed technical document or code.", category: 'Engineering' }, B: { text: "A research paper or scientific report.", category: 'B.Sc.' }, C: { text: "A blueprint or a 3D model.", category: 'Architecture' }, D: { text: "A business plan or marketing strategy.", category: 'Management' }, E: { text: "A well-structured legal brief.", category: 'Law' }}}
+            ],
+            science_pcb: [
+                { id: 26, text: "What do you find most interesting to learn about?", options: { A: { text: "The intricate details of the human body.", category: 'Medical' }, B: { text: "The molecular structures and chemical reactions in living systems.", category: 'Biotech/Pharmacy' }, C: { text: "The business side of healthcare.", category: 'Management' }, D: { text: "Using biological systems to create new products.", category: 'Biotech/Pharmacy' }}},
+                { id: 27, text: "What motivates you most in your work?", options: { A: { text: "The opportunity to directly help people and improve their health.", category: 'Medical' }, B: { text: "The thrill of discovering new biological applications.", category: 'Biotech/Pharmacy' }, C: { text: "The drive to lead, innovate, and achieve financial success.", category: 'Management' }, D: { text: "Uncovering new knowledge in a research setting.", category: 'B.Sc.' }}},
+                { id: 28, text: "What kind of a leader would you be in a group project?", options: { A: { text: "The one who cares about the well-being of the team.", category: 'Medical' }, B: { text: "The meticulous planner for a scientific experiment.", category: 'Biotech/Pharmacy' }, C: { text: "The manager who keeps everyone organized.", category: 'Management' }, D: { text: "The person who focuses on the research and data.", category: 'B.Sc.' }}},
+                { id: 29, text: "What content do you prefer to watch online?", options: { A: { text: "Medical dramas or documentaries on health.", category: 'Medical' }, B: { text: "Videos on genetic engineering or new drugs.", category: 'Biotech/Pharmacy' }, C: { text: "Business podcasts or startup stories.", category: 'Management' }, D: { text: "Academic talks or research presentations.", category: 'B.Sc.' }}},
+                { id: 30, text: "What is your ideal work environment?", options: { A: { text: "A hospital or a clinic, interacting with people.", category: 'Medical' }, B: { text: "A lab, conducting research and experiments.", category: 'Biotech/Pharmacy' }, C: { text: "A corporate office where I can manage a team.", category: 'Management' }, D: { text: "A quiet, focused environment with complex tasks.", category: 'B.Sc.' }}},
+                { id: 31, text: "Which activity comes most naturally to you?", options: { A: { text: "Empathizing with people and understanding their needs.", category: 'Medical' }, B: { text: "Meticulously following instructions for a precise result.", category: 'Biotech/Pharmacy' }, C: { text: "Influencing and persuading people.", category: 'Management' }, D: { text: "Analyzing data and drawing logical conclusions.", category: 'B.Sc.' }}},
+                { id: 32, text: "If you could choose a major project, what would it be?", options: { A: { text: "Finding a new way to diagnose a rare disease.", category: 'Medical' }, B: { text: "Creating a new genetically modified plant.", category: 'Biotech/Pharmacy' }, C: { text: "Launching a new product in the market.", category: 'Management' }, D: { text: "Writing a research paper on a scientific discovery.", category: 'B.Sc.' }}},
+                { id: 33, text: "What kind of impact do you want to have?", options: { A: { text: "To provide care and improve individual well-being.", category: 'Medical' }, B: { text: "To create useful products like new medicines.", category: 'Biotech/Pharmacy' }, C: { text: "To build a successful business that provides jobs.", category: 'Management' }, D: { text: "To solve a specific problem through research.", category: 'B.Sc.' }}},
+                { id: 34, text: "What skills do you want to develop?", options: { A: { text: "Clinical skills and patient care techniques.", category: 'Medical' }, B: { text: "Advanced lab techniques and research skills.", category: 'Biotech/Pharmacy' }, C: { text: "Public speaking and leadership skills.", category: 'Management' }, D: { text: "Critical thinking and logical reasoning skills.", category: 'B.Sc.' }}},
+                { id: 35, text: "What kind of content do you prefer to create?", options: { A: { text: "A patient's case study or medical report.", category: 'Medical' }, B: { text: "A scientific paper on a biological process.", category: 'Biotech/Pharmacy' }, C: { text: "A business plan or marketing strategy.", category: 'Management' }, D: { text: "A report on an experiment or observation.", category: 'B.Sc.' }}}
+            ],
+            science_pcmb: [
+                { id: 36, text: "What do you find most interesting to learn about?", options: { A: { text: "The intricate details of the human body.", category: 'Medical' }, B: { text: "The physical and chemical laws that govern our universe.", category: 'Engineering' }, C: { text: "The financial and business side of science and technology.", category: 'Management' }, D: { text: "Applying mathematical principles to solve real-world problems.", category: 'Engineering' }}},
+                { id: 37, text: "What motivates you more than anything else?", options: { A: { text: "The opportunity to directly help people and improve health.", category: 'Medical' }, B: { text: "The intellectual challenge of solving complex technical problems.", category: 'Engineering' }, C: { text: "The drive to lead, innovate, and achieve financial success.", category: 'Management' }, D: { text: "Designing and building something tangible.", category: 'Engineering' }}},
+                { id: 38, text: "What kind of a leader would you be in a group project?", options: { A: { text: "The one who cares about the team's well-being.", category: 'Medical' }, B: { text: "The technical expert who finds the most efficient solution.", category: 'Engineering' }, C: { text: "The visionary who plans the design.", category: 'Architecture' }, D: { text: "The manager who keeps everyone organized.", category: 'Management' }, E: { text: "The one who ensures all rules are followed.", category: 'Law' }}},
+                { id: 39, text: "When you're online, what kind of content do you prefer?", options: { A: { text: "Medical dramas or documentaries on health.", category: 'Medical' }, B: { text: "Tech reviews or documentaries about engineering.", category: 'Engineering' }, C: { text: "Business podcasts or startup stories.", category: 'Management' }, D: { text: "Academic talks or research presentations.", category: 'B.Sc.' }}},
+                { id: 40, text: "What is your ideal work environment?", options: { A: { text: "A hospital or a clinic, helping people.", category: 'Medical' }, B: { text: "A lab or tech company, working on complex problems.", category: 'Engineering' }, C: { text: "A corporate office, managing a team.", category: 'Management' }, D: { text: "A university or research institution.", category: 'B.Sc.' }}},
+                { id: 41, text: "Which of these activities comes most naturally to you?", options: { A: { text: "Empathizing with people and understanding their needs.", category: 'Medical' }, B: { text: "Applying mathematical formulas to solve problems.", category: 'Engineering' }, C: { text: "Influencing and persuading people.", category: 'Management' }, D: { text: "Analyzing data and drawing logical conclusions.", category: 'B.Sc.' }}},
+                { id: 42, text: "If you could choose a major project, what would it be?", options: { A: { text: "Finding a new way to diagnose a rare disease.", category: 'Medical' }, B: { text: "Building a robot or designing a new computer chip.", category: 'Engineering' }, C: { text: "Launching a new product in the market.", category: 'Management' }, D: { text: "Writing a research paper on a scientific discovery.", category: 'B.Sc.' }}},
+                { id: 43, text: "What kind of impact do you want to have?", options: { A: { text: "To provide care and improve individual well-being.", category: 'Medical' }, B: { text: "To invent new technology that improves lives.", category: 'Engineering' }, C: { text: "To build a successful business.", category: 'Management' }, D: { text: "To solve a specific problem through research.", category: 'B.Sc.' }}},
+                { id: 44, text: "What skills do you want to develop?", options: { A: { text: "Clinical skills and patient care techniques.", category: 'Medical' }, B: { text: "Advanced programming and technical skills.", category: 'Engineering' }, C: { text: "Public speaking and leadership skills.", category: 'Management' }, D: { text: "Critical thinking and logical reasoning skills.", category: 'B.Sc.' }}},
+                { id: 45, text: "What kind of content do you prefer to create?", options: { A: { text: "A patient's case study or medical report.", category: 'Medical' }, B: { text: "A detailed technical document or code.", category: 'Engineering' }, C: { text: "A business plan or marketing strategy.", category: 'Management' }, D: { text: "A report on an experiment or observation.", category: 'B.Sc.' }}}
+            ],
+            commerce: [
+                { id: 46, text: "What do you find most interesting to learn about?", options: { A: { text: "The production, distribution, and consumption of goods and services.", category: 'B.A. in Economics' }, B: { text: "The fundamental principles of accounting and finance.", category: 'B.Com' }, C: { text: "Business management and preparing for leadership roles.", category: 'BBA' }, D: { text: "The legal aspects of business and society.", category: 'BBA LLB' }}},
+                { id: 47, text: "What motivates you more than anything else in your work?", options: { A: { text: "The challenge of understanding complex data and policy.", category: 'B.A. in Economics' }, B: { text: "Ensuring accuracy and precision in financial records.", category: 'B.Com' }, C: { text: "The opportunity to lead, innovate, and achieve business success.", category: 'BBA' }, D: { text: "The ability to argue for what is right and find a just solution.", category: 'BBA LLB' }}},
+                { id: 48, text: "What kind of a leader would you be in a group project?", options: { A: { text: "The person who analyzes the data and provides a logical solution.", category: 'B.A. in Economics' }, B: { text: "The detail-oriented person who keeps track of all the numbers and finances.", category: 'B.Com' }, C: { text: "The manager who keeps everyone organized and motivated to meet a deadline.", category: 'BBA' }, D: { text: "The one who ensures all rules are followed and the project is fair to everyone.", category: 'BBA LLB' }}},
+                { id: 49, text: "When you're online, what kind of content do you prefer to watch?", options: { A: { text: "Documentaries on global trade and economic trends.", category: 'B.A. in Economics' }, B: { text: "Financial news and discussions about the stock market.", category: 'B.Com' }, C: { text: "Business podcasts, startup stories, or interviews with CEOs.", category: 'BBA' }, D: { text: "Debates, legal case analysis, or documentaries about social policy.", category: 'BBA LLB' }}},
+                { id: 50, text: "What is your ideal work environment?", options: { A: { text: "A research institution or a government agency.", category: 'B.A. in Economics' }, B: { text: "A quiet office where I can focus on numbers and records.", category: 'B.Com' }, C: { text: "A corporate office where I can manage a team and make strategic decisions.", category: 'BBA' }, D: { text: "A legal firm or courtroom, where I can analyze legal documents and argue cases.", category: 'BBA LLB' }}},
+                { id: 51, text: "Which of these activities comes most naturally to you?", options: { A: { text: "Analyzing complex data and statistics.", category: 'B.A. in Economics' }, B: { text: "Keeping a ledger and balancing accounts.", category: 'B.Com' }, C: { text: "Influencing and persuading people.", category: 'BBA' }, D: { text: "Reading and interpreting dense text to find key information.", category: 'BBA LLB' }}},
+                { id: 52, text: "If you could choose to work on a major project right now, what would it be?", options: { A: { text: "A report on the economic impact of a new policy.", category: 'B.A. in Economics' }, B: { text: "Auditing the financial statements of a major company.", category: 'B.Com' }, C: { text: "Launching a new product in the market.", category: 'BBA' }, D: { text: "A case study on a legal precedent.", category: 'BBA LLB' }}},
+                { id: 53, text: "What kind of impact do you want to have on the world?", options: { A: { text: "To contribute to shaping government policies.", category: 'B.A. in Economics' }, B: { text: "To ensure financial integrity and trust in the business world.", category: 'B.Com' }, C: { text: "To build a successful business that provides jobs and valuable services.", category: 'BBA' }, D: { text: "To ensure that justice and fairness prevail in society.", category: 'BBA LLB' }}},
+                { id: 54, text: "What kind of skills do you want to develop in the next 5-10 years?", options: { A: { text: "Advanced data analysis and policy research skills.", category: 'B.A. in Economics' }, B: { text: "Accounting and financial management skills.", category: 'B.Com' }, C: { text: "Public speaking and leadership skills.", category: 'BBA' }, D: { text: "Legal analysis and argumentation skills.", category: 'BBA LLB' }}},
+                { id: 55, text: "What kind of content do you prefer to create?", options: { A: { text: "A research paper on an economic topic.", category: 'B.A. in Economics' }, B: { text: "A detailed financial report.", category: 'B.Com' }, C: { text: "A business plan or a marketing strategy.", category: 'BBA' }, D: { text: "A well-structured legal brief or a persuasive essay.", category: 'BBA LLB' }}}
+            ],
+            arts: [
+                { id: 56, text: "What do you find most interesting to learn about?", options: { A: { text: "The history of different cultures and societies.", category: 'B.A. in History/Political Science' }, B: { text: "Human behavior and the workings of the mind.", category: 'B.A. in Psychology' }, C: { text: "The process of creating visual art or music.", category: 'BFA' }, D: { text: "Media, communication, and storytelling.", category: 'B.A. in Journalism & Mass Communication' }}},
+                { id: 57, text: "What motivates you more than anything else in your work?", options: { A: { text: "The opportunity to understand the past to shape the future.", category: 'B.A. in History/Political Science' }, B: { text: "The chance to help people understand themselves better.", category: 'B.A. in Psychology' }, C: { text: "The desire to express myself and create something unique.", category: 'BFA' }, D: { text: "The ability to tell important stories and inform the public.", category: 'B.A. in Journalism & Mass Communication' }}},
+                { id: 58, text: "What kind of a leader would you be in a group project?", options: { A: { text: "The one who provides historical context and policy insights.", category: 'B.A. in History/Political Science' }, B: { text: "The one who understands group dynamics and keeps everyone feeling comfortable.", category: 'B.A. in Psychology' }, C: { text: "The creative director who guides the visual or artistic direction.", category: 'BFA' }, D: { text: "The one who manages communication and ensures the message is clear.", category: 'B.A. in Journalism & Mass Communication' }}},
+                { id: 59, text: "When you're online, what kind of content do you prefer to watch?", options: { A: { text: "Documentaries about historical events or political analyses.", category: 'B.A. in History/Political Science' }, B: { text: "Videos on human behavior, psychology experiments, or social studies.", category: 'B.A. in Psychology' }, C: { text: "Art tutorials, music videos, or films about creative processes.", category: 'BFA' }, D: { text: "News debates, journalistic investigations, or media analyses.", category: 'B.A. in Journalism & Mass Communication' }}},
+                { id: 60, text: "What is your ideal work environment?", options: { A: { text: "A library or research institution.", category: 'B.A. in History/Political Science' }, B: { text: "A clinic, a school, or a counseling center.", category: 'B.A. in Psychology' }, C: { text: "A studio, a gallery, or a creative agency.", category: 'BFA' }, D: { text: "A newsroom or a public relations office.", category: 'B.A. in Journalism & Mass Communication' }}},
+                { id: 61, text: "Which of these activities comes most naturally to you?", options: { A: { text: "Reading and interpreting dense historical texts.", category: 'B.A. in History/Political Science' }, B: { text: "Listening to people and understanding their emotions.", category: 'B.A. in Psychology' }, C: { text: "Expressing your ideas through a visual medium.", category: 'BFA' }, D: { text: "Communicating complex ideas in a simple, clear way.", category: 'B.A. in Journalism & Mass Communication' }}},
+                { id: 62, text: "If you could choose to work on a major project right now, what would it be?", options: { A: { text: "A research paper on the political history of your state.", category: 'B.A. in History/Political Science' }, B: { text: "A case study on a specific psychological disorder.", category: 'B.A. in Psychology' }, C: { text: "A portfolio of your best paintings or designs.", category: 'BFA' }, D: { text: "A documentary about a social issue in your community.", category: 'B.A. in Journalism & Mass Communication' }}},
+                { id: 63, text: "What kind of impact do you want to have on the world?", options: { A: { text: "To contribute to shaping government policies.", category: 'B.A. in History/Political Science' }, B: { text: "To help individuals live a more fulfilling and mentally healthy life.", category: 'B.A. in Psychology' }, C: { text: "To inspire people through creative expression.", category: 'BFA' }, D: { text: "To inform the public and hold power accountable.", category: 'B.A. in Journalism & Mass Communication' }}},
+                { id: 64, text: "What kind of skills do you want to develop in the next 5-10 years?", options: { A: { text: "Research skills and public policy analysis.", category: 'B.A. in History/Political Science' }, B: { text: "Counseling and therapy skills.", category: 'B.A. in Psychology' }, C: { text: "Advanced design and artistic skills.", category: 'BFA' }, D: { text: "Public speaking, reporting, and communication skills.", category: 'B.A. in Journalism & Mass Communication' }}},
+                { id: 65, text: "What kind of content do you prefer to create?", options: { A: { text: "A research paper or a policy brief.", category: 'B.A. in History/Political Science' }, B: { text: "A psychological profile or a case study.", category: 'B.A. in Psychology' }, C: { text: "An artistic portfolio or a piece of visual art.", category: 'BFA' }, D: { text: "An article, a news report, or a video story.", category: 'B.A. in Journalism & Mass Communication' }}}
+            ]
+        }
+    };
+
+    // --- FIX: Function to jumble options for a given quiz array ---
+    function jumbleQuizOptions(quizQuestions) {
+        quizQuestions.forEach(question => {
+            const optionsArray = Object.values(question.options);
+            // Fisher-Yates shuffle algorithm
+            for (let i = optionsArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [optionsArray[i], optionsArray[j]] = [optionsArray[j], optionsArray[i]];
+            }
+            const shuffledOptions = {};
+            const keys = ['A', 'B', 'C', 'D', 'E']; // Max 5 options for the quizzes
+            for (let i = 0; i < optionsArray.length; i++) {
+                shuffledOptions[keys[i]] = optionsArray[i];
+            }
+            question.options = shuffledOptions;
+        });
+    }
+
+    // Apply the jumbling to the post10 questions on load
+    jumbleQuizOptions(questions.post10);
+    // Apply the jumbling to the post12 questions on load
+    Object.values(questions.post12).forEach(jumbleQuizOptions);
+
+    // --- Core Functions ---
+    function showStep(stepName) {
+        Object.values(steps).forEach(step => step.classList.add('hidden'));
+        if (steps[stepName]) {
+            steps[stepName].classList.remove('hidden');
+        }
+    }
+
+    function renderQuestion(index) {
+        const questionContent = document.querySelector('.question-content');
+        questionContent.classList.add('fade-out');
+        setTimeout(() => {
+            currentQuestionIndex = index;
+            const q = activeQuestions[index];
+            questionsContainer.innerHTML = '';
+            const questionEl = document.createElement('div');
+            let optionsHtml = '<div class="mt-4 space-y-3">';
+            for (const key in q.options) {
+                const isChecked = userAnswers[q.id] === q.options[key].category;
+                optionsHtml += `<label class="flex items-center p-3 rounded-lg border hover:bg-gray-100 cursor-pointer transition-colors duration-200 ${isChecked ? 'bg-blue-50 border-blue-300' : 'bg-white'}"><input type="radio" name="question-${q.id}" value="${q.options[key].category}" class="mr-3" ${isChecked ? 'checked' : ''}><span class="font-medium text-gray-800">${q.options[key].text}</span></label>`;
+            }
+            optionsHtml += '</div>';
+            questionEl.innerHTML = `<p class="text-xl font-semibold text-gray-900">${index + 1}. ${q.text}</p>${optionsHtml}`;
+            questionsContainer.appendChild(questionEl);
+            questionsContainer.querySelectorAll(`input[name="question-${q.id}"]`).forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    userAnswers[q.id] = e.target.value;
+                    updateIndex();
+                    updateProgressBar();
+                });
+            });
+            updateNavButtons();
+            updateIndex();
+            updateProgressBar();
+            questionContent.classList.remove('fade-out');
+        }, 200);
+    }
+    
+    function updateProgressBar() {
+        const answeredCount = Object.keys(userAnswers).length;
+        const totalQuestions = activeQuestions.length;
+        const percentage = totalQuestions > 0 ? (answeredCount / totalQuestions) * 100 : 0;
+        progressBar.style.width = `${percentage}%`;
+    }
+
+    function updateIndex() {
+        questionIndexContainer.innerHTML = '';
+        activeQuestions.forEach((q, index) => {
+            const indexBtn = document.createElement('button');
+            indexBtn.textContent = index + 1;
+            let baseClasses = 'w-10 h-10 flex items-center justify-center rounded-full font-semibold transition-colors duration-200';
+            if (index === currentQuestionIndex) {
+                indexBtn.className = `${baseClasses} bg-blue-600 text-white`;
+            } else if (userAnswers[q.id]) {
+                indexBtn.className = `${baseClasses} bg-green-500 text-white`;
+            } else {
+                indexBtn.className = `${baseClasses} bg-gray-200 text-gray-700 hover:bg-gray-300`;
+            }
+            indexBtn.addEventListener('click', () => renderQuestion(index));
+            questionIndexContainer.appendChild(indexBtn);
+        });
+    }
+
+    function updateNavButtons() {
+        progressText.textContent = `Question ${currentQuestionIndex + 1} of ${activeQuestions.length}`;
+        prevBtn.classList.toggle('hidden', currentQuestionIndex === 0);
+        nextBtn.classList.toggle('hidden', currentQuestionIndex === activeQuestions.length - 1);
+        submitBtn.classList.toggle('hidden', currentQuestionIndex !== activeQuestions.length - 1);
+    }
+    
+    function startQuiz(qList) {
+        activeQuestions = qList;
+        currentQuestionIndex = 0;
+        userAnswers = {};
+        renderQuestion(0);
+        showStep('quiz');
+    }
+    
+    function renderResults(resultData) {
+        resultsScoresContainer.innerHTML = ''; // Scores are removed
+        
+        const createRecCard = (rec) => {
+            const pathsList = (rec.career_paths || []).map(p => `<li>${p}</li>`).join('');
+            const examsList = (rec.exams || []).map(e => `<li>${e}</li>`).join('');
+            return `<div class="bg-blue-50 p-6 rounded-xl border border-blue-200"><h4 class="text-xl font-bold text-blue-800 mb-2">${rec.title}</h4><p class="text-gray-700 mb-4">${rec.description}</p><div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t"><div><p class="font-semibold text-gray-700 mb-1">Potential Career Paths</p><ul class="list-disc list-inside text-sm text-gray-600">${pathsList}</ul></div><div><p class="font-semibold text-gray-700 mb-1">Relevant Entrance Exams</p><ul class="list-disc list-inside text-sm text-gray-600">${examsList}</ul></div></div></div>`;
+        };
+
+        primaryRecsContainer.innerHTML = '';
+        if (resultData.recommendations.primary && resultData.recommendations.primary.length > 0) {
+            primaryRecsContainer.innerHTML += `<h3 class="text-2xl font-bold text-gray-800 mb-4">Primary Recommendations</h3>`;
+            const primaryGrid = document.createElement('div');
+            primaryGrid.className = 'space-y-4';
+            resultData.recommendations.primary.forEach(rec => primaryGrid.innerHTML += createRecCard(rec));
+            primaryRecsContainer.appendChild(primaryGrid);
+        }
+
+        secondaryRecsContainer.innerHTML = '';
+        
+        nextStepsContainer.innerHTML = `<h3 class="text-2xl font-bold text-gray-800 mb-4 mt-8">Next Steps</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-4"><a href="{{ url_for('main.page_courses') }}" class="block p-4 bg-gray-100 rounded-lg hover:bg-gray-200 text-center"><strong class="font-semibold text-gray-800">Explore Courses</strong><p class="text-sm text-gray-600">Get detailed information on courses.</p></a><a href="{{ url_for('main.page_scholarships') }}" class="block p-4 bg-gray-100 rounded-lg hover:bg-gray-200 text-center"><strong class="font-semibold text-gray-800">Find Scholarships</strong><p class="text-sm text-gray-600">Search for funding opportunities.</p></a><a href="{{ url_for('main.page_timeline') }}" class="block p-4 bg-gray-100 rounded-lg hover:bg-gray-200 text-center"><strong class="font-semibold text-gray-800">Check Timeline</strong><p class="text-sm text-gray-600">View important exam dates.</p></a></div>`;
+        if (primaryRecsContainer.innerHTML === '' && secondaryRecsContainer.innerHTML === '') {
+            primaryRecsContainer.innerHTML = '<p class="text-center text-gray-500">No specific recommendations could be generated.</p>';
+        }
+        showStep('results');
+    }
+
+    // --- Event Listeners ---
+    document.querySelectorAll('.education-btn').forEach(btn => btn.addEventListener('click', (e) => {
+        educationLevel = e.target.dataset.level;
+        if (educationLevel === 'post10') {
+            questionTitle.textContent = "Assessment for After Class 10";
+            startQuiz(questions.post10);
+        } else {
+            showStep('stream');
+        }
+    }));
+    
+    document.querySelectorAll('.stream-btn').forEach(btn => btn.addEventListener('click', (e) => {
+        stream = e.target.dataset.stream;
+        questionTitle.textContent = `Assessment for After Class 12 (${stream.replace(/_/g, ' ').toUpperCase()})`;
+        startQuiz(questions.post12[stream] || []); // Fallback to empty array
+    }));
+
+    nextBtn.addEventListener('click', () => {
+        if (currentQuestionIndex < activeQuestions.length - 1) {
+            renderQuestion(currentQuestionIndex + 1);
+        }
+    });
+
+    prevBtn.addEventListener('click', () => {
+        if (currentQuestionIndex > 0) {
+            renderQuestion(currentQuestionIndex - 1);
+        }
+    });
+
+    submitBtn.addEventListener('click', async () => {
+        if (Object.keys(userAnswers).length !== activeQuestions.length) {
+            alert('Please answer all questions before submitting.');
+            return;
+        }
+        submitBtn.textContent = 'Analyzing...';
+        submitBtn.disabled = true;
+        try {
+            const token = localStorage.getItem('authToken');
+            const response = await fetch('/api/quiz-recommendations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ education_level: educationLevel, stream: stream, answers: userAnswers })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                renderResults(data);
+            } else {
+                alert('Error submitting quiz: ' + (data.error || 'Unknown error'));
+            }
+        } catch (error) {
+            alert('An unexpected error occurred. Please try again.');
+        } finally {
+            submitBtn.textContent = 'Submit & See Results';
+            submitBtn.disabled = false;
+        }
+    });
+
+    retakeBtn.addEventListener('click', () => showStep('education'));
+    
+    // --- RESTORED: Initial Page Load Logic ---
+    async function checkPreviousResults() {
+        const token = localStorage.getItem('authToken');
+        // If no token, redirect to login. This protects the page client-side.
+        if (!token) {
+            window.location.href = "{{ url_for('main.page_login') }}";
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/last-quiz-result', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.has_result) {
+                    renderResults(data.result);
+                } else {
+                    // No previous result, show the initial quiz screen
+                    showStep('education');
+                }
+            } else {
+                // Handle errors like expired token (401) by showing the quiz
+                console.error("Could not fetch last result, status:", response.status);
+                showStep('education'); // Fallback on network error
+            }
+        } catch (error) {
+            console.error("Error checking previous results:", error);
+            showStep('education'); // Fallback on network error
+        }
+    }
+
+    // Start the page initialization
+    checkPreviousResults();
+    
+    backToEducationBtn.addEventListener('click', () => {
+        showStep('education');
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,176 @@
+{
+    "After 10th": {
+        "Higher Secondary (11-12)": [
+            {
+                "title": "Science (PCM)",
+                "description": "This stream is your direct entry into engineering, technology, and architecture. You'll master Physics, Chemistry, and Mathematics, which are essential for understanding the fundamental principles of the physical world. This combination builds powerful logical reasoning and problem-solving skills, making it the ideal path for future innovators and builders who are curious about how things work.",
+                "career_paths": ["B.Tech", "B.Arch", "Data Science"],
+                "exams": ["JEE Main & Advanced", "BITSAT"]
+            },
+            {
+                "title": "Science (PCB)",
+                "description": "Focuses on Physics, Chemistry, and Biology. This stream is the primary path for careers in medicine, pharmacy, and life sciences. Biology subjects include Botany and Zoology, providing a deep understanding of living organisms and human anatomy, which is crucial for medical and research fields.",
+                "career_paths": ["MBBS", "BDS (Dentistry)", "Veterinary Science"],
+                "exams": ["NEET", "AIIMS Entrance"]
+            },
+            {
+                "title": "Science (PCMB)",
+                "description": "A versatile stream including Physics, Chemistry, Math, and Biology, keeping options open for both medical and engineering fields. While it requires a high level of dedication, it offers the flexibility to pursue diverse careers in interdisciplinary fields like Biotechnology, Bioinformatics, and Genetic Engineering.",
+                "career_paths": ["Biotechnology", "Bioinformatics", "Genetic Engineering"],
+                "exams": ["JEE", "NEET"]
+            },
+            {
+                "title": "Commerce",
+                "description": "This stream focuses on business, finance, and accounting. Key subjects include Economics, Accountancy, Business Studies, and Mathematics. It provides a strong foundational knowledge of how businesses and economies function, making it a crucial path for corporate and financial careers.",
+                "career_paths": ["Chartered Accountancy (CA)", "B.Com", "BBA"],
+                "exams": ["CA Foundation", "CUET"]
+            },
+            {
+                "title": "Arts / Humanities",
+                "description": "A diverse stream for students interested in social sciences, languages, and creative fields. The curriculum includes subjects like History, Political Science, Psychology, Sociology, and Literature. It hones critical thinking, analytical, and communication skills, preparing students for careers in civil services, law, journalism, and research.",
+                "career_paths": ["Civil Services (IAS/IPS)", "Law", "Journalism"],
+                "exams": ["CUET", "CLAT"]
+            }
+        ],
+        "Diploma Courses": [
+            {
+                "title": "Diploma in Engineering",
+                "description": "A 3-year technical course that is a practical, career-oriented alternative to a conventional 12th-grade education. It provides hands-on training and a strong foundational knowledge in fields like Civil, Mechanical, or Computer Engineering. It prepares students for junior-level roles as technicians or supervisors and also offers a lateral entry to the second year of B.Tech programs, saving time and money.",
+                "career_paths": ["Junior Engineer", "Technician", "Lateral Entry to B.Tech"],
+                "exams": ["State Polytechnic Entrance Tests"]
+            }
+        ]
+    },
+    "After 12th": {
+        "Engineering & Technology": [
+            {
+                "title": "B.Tech in Computer Science",
+                "description": "A four-year degree combining the study of computer hardware and software. The comprehensive curriculum covers core subjects like Data Structures, Algorithms, Operating Systems, and Computer Networks. Students also learn advanced topics in Artificial Intelligence, Machine Learning, Cloud Computing, and Cybersecurity. This program is highly practical, involving coding, project development, and a strong focus on problem-solving, preparing graduates for key roles in the tech industry.",
+                "career_paths": ["Software Engineer", "Data Scientist", "Cybersecurity Analyst"],
+                "exams": ["JEE","JEE Advanced","BITSAT", "VITEEE","SRMJEE","GATE","CUET"]
+            },
+            {
+                "title": "Architecture (B.Arch)",
+                "description": "A 5-year undergraduate professional degree that trains students in the art of designing and constructing buildings, urban spaces, and landscapes. The course blends creative design and technical drawing with engineering principles, history of architecture, and sustainability concepts. It involves a lot of studio work and hands-on modeling, fostering a unique blend of artistic and analytical skills.",
+                "career_paths": ["Architect", "Urban Planner", "Interior Designer"],
+                "exams": ["NATA", "JEE Paper 2","HITSEEE","GITAM GAT","CUET"]
+            }
+        ],
+        "Medical & Health Sciences": [
+            {
+                "title": "MBBS",
+                "description": "The Bachelor of Medicine and Bachelor of Surgery is a 5.5-year professional course (4.5 years of academic study + 1 year of compulsory internship) that is the foundational qualification to become a licensed doctor. The curriculum provides an in-depth and rigorous study of human anatomy, physiology, pathology, pharmacology, and microbiology. The one-year internship is a critical component where students get hands-on clinical training in various hospital departments, preparing them for real-world medical practice.",
+                "career_paths": ["Doctor", "Surgeon", "Medical Researcher"],
+                "exams": ["NEET"]
+            },
+            {
+                "title": "B.Sc. in Biotechnology",
+                "description": "A three-year course that applies biological processes to develop new products and technologies in medicine, agriculture, and industry. The curriculum covers core subjects like Biochemistry, Molecular Biology, Microbiology, and Recombinant DNA Technology. This degree is highly lab-intensive, giving students practical skills in genetic engineering, drug discovery, and vaccine development, making them suitable for roles in research and pharmaceuticals.",
+                "career_paths": ["Biomedical Scientist", "Research Associate"],
+                "exams": ["CUET","LPUNEST","KIITEE","KCET","DUET"]
+            }
+        ],
+        "Commerce & Management": [
+            {
+                "title": "Bachelor of Commerce (B.Com)",
+                "description": "A three-year undergraduate program providing a strong foundational knowledge in commerce, accounting, and finance. The course covers core subjects such as Financial Accounting, Business Law, Economics, and Taxation. It's a popular choice for students aspiring to build careers in auditing, banking, and financial analysis, as it provides a solid understanding of business operations and financial reporting.",
+                "career_paths": ["Accountant", "Financial Analyst", "Tax Consultant"],
+                "exams": ["CUET","IPU-CET","NPAT"]
+            },
+            {
+                "title": "Bachelor of Business Administration (BBA)",
+                "description": "A three-year program designed to provide a broad understanding of business management and leadership. The syllabus includes core subjects like Marketing Management, Human Resource Management, Financial Management, and Business Analytics. This degree is highly practical, often including case studies and projects, preparing students for entry-level managerial and administrative roles across various industries.",
+                "career_paths": ["Marketing Manager", "HR Manager", "Business Analyst"],
+                "exams": ["CUET UG","NPAT","AIMA UGAT","DU JAT", "IPU CET"]
+            },
+            {
+                "title": "B.A. (Hons.) in Economics",
+                "description": "A rigorous three-year course that studies the production, distribution, and consumption of goods and services. The curriculum provides a strong analytical and quantitative foundation, covering topics in Microeconomics, Macroeconomics, Econometrics, and Public Finance. This degree is ideal for students aiming for careers in policy analysis, market research, and data-driven roles, as it teaches a structured approach to solving complex economic problems.",
+                "career_paths": ["Economist", "Market Researcher", "Data Analyst"],
+                "exams": ["CUET","UGC NET","PA PGCET","SAT India","CSIR NET","GATE"]
+            },
+            {
+                "title": "Integrated Law (BBA LLB)",
+                "description": "A five-year integrated program that combines core business administration subjects with legal principles. It provides a comprehensive understanding of both management and law, with subjects ranging from Business Ethics and Financial Accounting to Constitutional Law and Corporate Law. It is specifically designed for students who want to pursue a career in corporate law and legal compliance, giving them a competitive edge by blending business acumen with legal expertise.",
+                "career_paths": ["Corporate Lawyer", "Legal Advisor", "Compliance Officer"],
+                "exams": ["CLAT", "LSAT India","AILET","CUET"]
+            }
+        ],
+        "Arts & Humanities": [
+            {
+                "title": "B.A. in History / Political Science",
+                "description": "A foundational three-year degree that explores the evolution of societies and the functioning of political systems. Students gain critical thinking, research, and communication skills by studying historical events and political theories. This course is a strong launchpad for careers in civil services, public policy, and journalism, as it provides a deep understanding of governance, social structures, and international relations.",
+                "career_paths": ["Civil Servant (IAS/IPS)", "Policy Analyst", "Archivist"],
+                "exams": ["UPSC Civil Services Exam", "CUET UG","IPU CET","JMI","PUBDET"]
+            },
+            {
+                "title": "B.A. in Psychology",
+                "description": "A three-year undergraduate degree focused on the scientific study of human behavior and the mind. The course covers a wide range of topics, including developmental psychology, social psychology, abnormal psychology, and counseling. It equips students with strong analytical and observational skills, preparing them for roles in counseling, human resources, market research, and social work.",
+                "career_paths": ["Counselor", "HR Specialist", "Clinical Psychologist"],
+                "exams": ["CUET","JMI Entrance Exam","IPU CET"]
+            },
+            {
+                "title": "Bachelor of Fine Arts (BFA)",
+                "description": "A comprehensive undergraduate degree focused on visual and performing arts, perfect for creative individuals. Students can specialize in a variety of fields such as Painting, Sculpture, Applied Arts, Photography, or Digital Art. The curriculum emphasizes hands-on studio practice, art history, and the development of a unique creative voice, preparing graduates for professional careers in design, media, and the fine art world.",
+                "career_paths": ["Graphic Designer", "Artist", "Animator"],
+                "exams": ["NID Entrance Exam", "NIFT Entrance Exam","JMI Entrance Exam","MAH AAC CET"]
+            },
+            {
+                "title": "B.A. in Journalism & Mass Communication",
+                "description": "A three-year program that provides a comprehensive overview of the media and communication industry. The course covers various facets of the field, including news reporting, media ethics, public relations, and digital media production. It equips students with the practical skills needed for a career in print, electronic, and digital journalism, advertising, or public relations, teaching them to research, write, and present information effectively.",
+                "career_paths": ["Reporter", "Editor", "PR Specialist"],
+                "exams": ["CUET","GMCET","LPUNEST","IPU CET", "University Entrance Exams"]
+            }
+        ]
+    },
+    "After UG": {
+        "Postgraduate Degrees": [
+            {
+                "title": "Master of Technology (M.Tech)",
+                "description": "A two-year advanced postgraduate degree for engineering graduates who want to specialize in a specific domain such as Computer Science, Mechanical Engineering, or Civil Engineering. The program focuses on advanced technical knowledge, research, and analytical skills through specialized coursework and a thesis. It's a key qualification for senior technical roles, research scientist positions, and for those who wish to pursue a career in academia.",
+                "career_paths": ["Research Scientist", "Lead Engineer", "Professor"],
+                "exams": ["GATE","SRMJEE PG","IPU CET"]
+            },
+            {
+                "title": "Master of Business Administration (MBA)",
+                "description": "A two-year graduate degree that is essential for aspiring leaders and managers in the corporate world. The curriculum provides a holistic understanding of business operations, covering core subjects like Marketing Management, Financial Management, Organizational Behaviour, and Strategic Planning. Through case studies and group projects, it prepares professionals for senior leadership, consulting, and entrepreneurial roles across all industries.",
+                "career_paths": ["CEO", "Management Consultant", "Product Manager"],
+                "exams": ["CAT", "XAT", "GMAT","SNAP","MAT","CMAT"]
+            },
+            {
+                "title": "Master of Science (M.Sc)",
+                "description": "A one or two-year postgraduate degree for students pursuing advanced scientific research and academia. The program offers deep specialization in a scientific discipline, such as Chemistry, Physics, or Biotechnology. It involves advanced coursework, intensive laboratory work, and a research-based dissertation, making it the ideal path for those seeking to become a scientist, lab manager, or academic researcher.",
+                "career_paths": ["Scientist", "Lab Manager", "Academic Researcher"],
+                "exams": ["CUET-PG","GATE","NET", "IIT JAM"]
+            }
+        ]
+    },
+    "Job Departments": {
+        "Career Fields": [
+            {
+                "title": "IT & Software",
+                "description": "Careers in software development, cybersecurity, and data management. This field involves designing, developing, and maintaining computer systems and applications. Professionals in this sector are constantly learning new programming languages and technologies to solve complex problems and innovate.",
+                "career_paths": ["Software Engineer", "DevOps Engineer", "Cloud Architect"],
+                "exams": ["BITSAT","VITEEE"]
+            },
+            {
+                "title": "Government Services (Civil Services)",
+                "description": "Careers in public service, including administration, police, and foreign service. These roles involve serving the public and implementing government policies. The recruitment is done through highly competitive exams like the UPSC Civil Services Exam, which tests a candidate's general knowledge, aptitude, and leadership skills.",
+                "career_paths": ["IAS", "IPS", "IFS", "IRS"],
+                "exams": ["UPSC Civil Services Exam","IFoS","ESE","CSE"]
+            },
+            {
+                "title": "Banking & Finance",
+                "description": "Careers in banks, financial institutions, and investment firms. This field involves managing money, investments, and risk. Professionals work in diverse roles from a bank teller to an investment banker, requiring strong analytical and communication skills. They play a crucial role in economic growth by facilitating transactions and providing financial services.",
+                "career_paths": ["Financial Analyst", "Investment Banker", "Risk Manager"],
+                "exams": ["IBPS", "SBI PO","SBI Clerk","IBPS PO"]
+            },
+            {
+                "title": "Healthcare & Medicine",
+                "description": "Jobs in hospitals, clinics, and research facilities. This sector is dedicated to providing medical care, treatment, and prevention of diseases. Professionals in this field range from doctors and nurses to pharmacists and dietitians, all working to improve human health and well-being.",
+                "career_paths": ["Pharmacist", "Nurse", "Dietitian"],
+                "exams": ["NEET-PG", "GPAT","INI CET","PGIMER"]
+            }
+        ]
+    }
+}

@@ -1,0 +1,353 @@
+{% extends "layout.html" %}
+
+{% block title %}Explore Colleges - CareerPath Pro{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-xl shadow-lg mb-8 text-center">
+        <h1 class="text-3xl font-bold tracking-tight">Explore Colleges & Universities</h1>
+        <p class="text-lg font-light mt-2 opacity-90">Find the right institution for your future.</p>
+    </div>
+    
+    <!-- State/UT and City Selection Dropdowns -->
+    <div class="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <h2 id="city-title" class="text-2xl font-bold text-gray-800">All Colleges</h2>
+        <div class="flex space-x-4">
+            <div class="relative inline-block text-gray-700">
+                <select id="state-select" class="block w-full px-4 py-2 pr-8 rounded-lg border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 appearance-none">
+                    <option value="">Select State/UT...</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.05 6.879 4.636 8.293z"/></svg>
+                </div>
+            </div>
+            <div class="relative inline-block text-gray-700">
+                <select id="city-select" class="block w-full px-4 py-2 pr-8 rounded-lg border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 appearance-none" disabled>
+                    <option value="All">All Cities</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.05 6.879 4.636 8.293z"/></svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="colleges-container" class="space-y-8">
+        <p class="text-center text-gray-500 mt-10">Loading colleges...</p>
+    </div>
+
+    <!-- Comparison Modal -->
+    <div id="compare-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center p-4 z-[60]">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-5xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h3 class="text-2xl font-bold text-gray-800">College Comparison</h3>
+                <button onclick="hideCompareModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="comparison-content" class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Comparison data will be dynamically loaded here -->
+            </div>
+            <div class="p-6 border-t flex justify-end">
+                <button onclick="hideCompareModal()" class="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Tray at the bottom -->
+    <div id="comparison-tray" class="fixed bottom-0 left-0 right-0 bg-blue-50 border-t-2 border-blue-200 p-4 transform translate-y-full transition-transform duration-300 z-50 lg:ml-64">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div id="comparison-list" class="flex flex-wrap gap-2 text-sm text-gray-700">
+                <!-- Selected items will be displayed here -->
+            </div>
+            <div class="flex space-x-2">
+                <button id="clear-all-btn" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg font-semibold hover:bg-gray-400">Clear All</button>
+                <button id="show-compare-modal-btn" class="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700">Compare (<span id="compare-count">0</span>)</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        window.location.href = "{{ url_for('main.page_login') }}";
+        return;
+    }
+    
+    const collegesContainer = document.getElementById('colleges-container');
+    const stateSelect = document.getElementById('state-select');
+    const citySelect = document.getElementById('city-select');
+    const cityTitle = document.getElementById('city-title');
+    const headers = { 'Authorization': `Bearer ${token}` };
+    let allColleges = {}; 
+    let selectedForComparison = new Set();
+    const comparisonTray = document.getElementById('comparison-tray');
+    const comparisonList = document.getElementById('comparison-list');
+    const compareCount = document.getElementById('compare-count');
+    const compareModal = document.getElementById('compare-modal');
+    const comparisonContent = document.getElementById('comparison-content');
+    const clearAllBtn = document.getElementById('clear-all-btn');
+    const showCompareModalBtn = document.getElementById('show-compare-modal-btn');
+    
+    const allStatesAndUTs = [
+        "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", 
+        "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", 
+        "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", 
+        "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", 
+        "Uttar Pradesh", "Uttarakhand", "West Bengal", "Andaman and Nicobar Islands",
+        "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Jammu and Kashmir",
+        "Ladakh", "Lakshadweep", "Puducherry"
+    ].sort();
+
+    async function fetchWithAuth(url) {
+        const response = await fetch(url, { headers: headers });
+        if (response.status === 401) {
+            localStorage.removeItem('authToken');
+            window.location.href = "{{ url_for('main.page_login') }}";
+            throw new Error('Unauthorized');
+        }
+        return response;
+    }
+
+    const createCollegeCard = (college) => {
+        const isSelected = selectedForComparison.has(college.name);
+        return `
+            <div class="p-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition-shadow bg-gray-50 flex flex-col">
+                <h3 class="font-bold text-lg text-blue-700 mb-1">${college.name}</h3>
+                <p class="text-sm text-gray-600 mb-4 flex-grow">${college.address}</p>
+                <a href="${college.website}" target="_blank" class="text-blue-500 hover:underline text-sm mb-4 block">Visit Website</a>
+                <button data-college-name="${college.name}" class="compare-btn mt-auto px-4 py-2 rounded-lg font-semibold transition-colors duration-200 ${isSelected ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-blue-600 text-white hover:bg-blue-700'}">
+                    ${isSelected ? 'Remove from Compare' : 'Add to Compare'}
+                </button>
+            </div>
+        `;
+    };
+    
+    const renderColleges = (colleges) => {
+        collegesContainer.innerHTML = '';
+        if (colleges && colleges.length > 0) {
+            const grid = document.createElement('div');
+            grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+            colleges.forEach(college => {
+                grid.innerHTML += createCollegeCard(college);
+            });
+            collegesContainer.appendChild(grid);
+        } else {
+            collegesContainer.innerHTML = '<p class="text-center text-gray-500">No colleges found for this location.</p>';
+        }
+        addComparisonListeners();
+    };
+
+    const filterAndRenderColleges = (state, city) => {
+        let collegesToRender = [];
+        if (state === 'All' || state === '') {
+            cityTitle.textContent = 'All Colleges';
+            collegesToRender = Object.values(allColleges).flatMap(stateData => Object.values(stateData)).flatMap(colleges => colleges);
+            if (state !== 'All' && state !== '' && !allColleges[state]) {
+                collegesContainer.innerHTML = `<p class="text-center text-gray-500">College data for ${state} is not yet available.</p>`;
+                return;
+            }
+        } else if (city === 'All') {
+            cityTitle.textContent = `${state} Colleges`;
+            collegesToRender = Object.values(allColleges[state]).flatMap(colleges => colleges);
+        } else {
+            cityTitle.textContent = `${city} Colleges`;
+            collegesToRender = allColleges[state][city];
+        }
+        renderColleges(collegesToRender);
+    };
+
+    const updateCityDropdown = (state) => {
+        citySelect.innerHTML = '<option value="All">All Cities</option>';
+        if (state && allColleges[state]) {
+            citySelect.disabled = false;
+            Object.keys(allColleges[state]).forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                citySelect.appendChild(option);
+            });
+        } else {
+            citySelect.disabled = true;
+        }
+    };
+    
+    const updateComparisonTray = () => {
+        comparisonList.innerHTML = '';
+        selectedForComparison.forEach(name => {
+            const itemEl = document.createElement('div');
+            itemEl.className = 'flex items-center space-x-1 bg-white border border-gray-300 rounded-full pl-3 pr-1 py-1';
+            itemEl.innerHTML = `
+                <span class="text-xs font-medium text-gray-700">${name}</span>
+                <button data-name="${name}" class="remove-from-compare text-gray-500 hover:text-gray-700 p-1 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            `;
+            comparisonList.appendChild(itemEl);
+        });
+
+        compareCount.textContent = selectedForComparison.size;
+        comparisonTray.classList.toggle('translate-y-full', selectedForComparison.size === 0);
+        
+        comparisonList.querySelectorAll('.remove-from-compare').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const nameToRemove = e.currentTarget.dataset.name;
+                toggleComparison(nameToRemove);
+            });
+        });
+    };
+    
+    const toggleComparison = (name) => {
+        if (selectedForComparison.has(name)) {
+            selectedForComparison.delete(name);
+        } else if (selectedForComparison.size < 5) {
+            selectedForComparison.add(name);
+        } else {
+            alert('You can only compare up to 5 colleges at a time.');
+        }
+        updateComparisonTray();
+        updateAllCollegeCards();
+    };
+
+    const updateAllCollegeCards = () => {
+        document.querySelectorAll('.compare-btn').forEach(btn => {
+            const name = btn.dataset.collegeName;
+            if (selectedForComparison.has(name)) {
+                btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                btn.classList.add('bg-red-500', 'hover:bg-red-600');
+                btn.textContent = 'Remove from Compare';
+            } else {
+                btn.classList.remove('bg-red-500', 'hover:bg-red-600');
+                btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                btn.textContent = 'Add to Compare';
+            }
+        });
+    };
+    
+    const addComparisonListeners = () => {
+        document.querySelectorAll('.compare-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const name = e.target.dataset.collegeName;
+                toggleComparison(name);
+            });
+        });
+    };
+    
+    const createComparisonCard = (college) => {
+        return `
+            <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm relative">
+                <button data-item-name="${college.name}" class="remove-from-modal absolute top-2 right-2 text-gray-400 hover:text-red-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <h4 class="text-xl font-bold text-gray-800 mb-2">${college.name}</h4>
+                <p class="text-gray-600 mb-4">${college.address}</p>
+                <a href="${college.website}" target="_blank" class="text-blue-500 hover:underline text-sm block">Visit Website</a>
+            </div>
+        `;
+    };
+
+    const showCompareModal = () => {
+        if (selectedForComparison.size < 2) {
+            alert('Please select at least 2 colleges to compare.');
+            return;
+        }
+        comparisonContent.innerHTML = '';
+        const allCollegesFlat = Object.values(allColleges).flatMap(stateData => Object.values(stateData)).flatMap(colleges => colleges);
+        const itemsToCompare = allCollegesFlat.filter(college => selectedForComparison.has(college.name));
+        
+        itemsToCompare.forEach(item => {
+            comparisonContent.innerHTML += createComparisonCard(item);
+        });
+        
+        compareModal.classList.remove('hidden');
+        compareModal.classList.add('flex');
+
+        document.querySelectorAll('.remove-from-modal').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const nameToRemove = e.currentTarget.dataset.itemName;
+                toggleComparison(nameToRemove);
+                
+                const newItemsToCompare = allCollegesFlat.filter(college => selectedForComparison.has(college.name));
+                if (newItemsToCompare.length < 2) {
+                    hideCompareModal();
+                } else {
+                    showCompareModal();
+                }
+            });
+        });
+    };
+    
+    const hideCompareModal = () => {
+        compareModal.classList.add('hidden');
+        compareModal.classList.remove('flex');
+    };
+    window.hideCompareModal = hideCompareModal;
+
+    const clearAllSelections = () => {
+        selectedForComparison.clear();
+        updateComparisonTray();
+        updateAllCollegeCards();
+    };
+
+    stateSelect.addEventListener('change', (e) => {
+        const selectedState = e.target.value;
+        citySelect.value = 'All';
+        updateCityDropdown(selectedState);
+        filterAndRenderColleges(selectedState, 'All');
+    });
+
+    citySelect.addEventListener('change', (e) => {
+        const selectedState = stateSelect.value;
+        const selectedCity = e.target.value;
+        filterAndRenderColleges(selectedState, selectedCity);
+    });
+
+    clearAllBtn.addEventListener('click', clearAllSelections);
+    showCompareModalBtn.addEventListener('click', showCompareModal);
+
+    async function fetchAndRenderAllColleges() {
+        try {
+            const response = await fetchWithAuth('/api/all_colleges');
+            if (!response.ok) throw new Error('Failed to fetch all colleges');
+            const data = await response.json();
+            allColleges = data;
+            
+            stateSelect.innerHTML = '<option value="">Select State/UT...</option>';
+            const statesAndUTsWithData = Object.keys(allColleges).sort();
+            statesAndUTsWithData.forEach(state => {
+                const option = document.createElement('option');
+                option.value = state;
+                option.textContent = state;
+                stateSelect.appendChild(option);
+            });
+
+            // Add all other states and UTs without data
+            const existingStates = new Set(Object.keys(allColleges));
+            allStatesAndUTs.forEach(state => {
+                if (!existingStates.has(state)) {
+                    const option = document.createElement('option');
+                    option.value = state;
+                    option.textContent = state;
+                    stateSelect.appendChild(option);
+                }
+            });
+            
+            filterAndRenderColleges('', '');
+        } catch (error) {
+            console.error('Error fetching colleges:', error);
+            collegesContainer.innerHTML = '<p class="text-center text-red-500">Could not load college data.</p>';
+        }
+    }
+
+    fetchAndRenderAllColleges();
+});
+</script>
+{% endblock %}

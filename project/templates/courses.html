@@ -1,0 +1,383 @@
+{% extends "layout.html" %}
+
+{% block title %}Courses & Careers - CareerPath Pro{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-xl shadow-lg mb-8">
+        <h1 class="text-3xl font-bold mb-2">Courses & Careers</h1>
+        <p class="text-lg font-light opacity-90">Explore different educational pathways and the exciting career opportunities they unlock.</p>
+    </div>
+
+    <!-- Main Pathway Navigation -->
+    <div id="pathway-buttons" class="mb-6 flex flex-wrap justify-center gap-4">
+        <button class="pathway-btn bg-white text-gray-800 font-semibold px-6 py-3 rounded-full shadow-md hover:bg-blue-500 hover:text-white transition-colors duration-200" data-pathway="After 10th">Post-10th Pathways</button>
+        <button class="pathway-btn bg-white text-gray-800 font-semibold px-6 py-3 rounded-full shadow-md hover:bg-blue-500 hover:text-white transition-colors duration-200" data-pathway="After 12th">Post-12th Pathways</button>
+        <button class="pathway-btn bg-white text-gray-800 font-semibold px-6 py-3 rounded-full shadow-md hover:bg-blue-500 hover:text-white transition-colors duration-200" data-pathway="After UG">Post-UG Pathways</button>
+        <button class="pathway-btn bg-white text-gray-800 font-semibold px-6 py-3 rounded-full shadow-md hover:bg-blue-500 hover:text-white transition-colors duration-200" data-pathway="Job Departments">Career Opportunities</button>
+    </div>
+
+    <div id="courses-container" class="space-y-4">
+        <!-- Content will be loaded dynamically -->
+        <p class="text-center text-gray-500 p-8">Select a pathway above to get started.</p>
+    </div>
+
+    <!-- Comparison Modal -->
+    <div id="compare-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center p-4 z-[60]">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-5xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h3 class="text-2xl font-bold text-gray-800">Course Comparison</h3>
+                <button onclick="hideCompareModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="comparison-content" class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Comparison data will be dynamically loaded here -->
+            </div>
+            <div class="p-6 border-t flex justify-end">
+                <button onclick="hideCompareModal()" class="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Tray at the bottom -->
+    <div id="comparison-tray" class="fixed bottom-0 left-0 right-0 bg-blue-50 border-t-2 border-blue-200 p-4 transform translate-y-full transition-transform duration-300 z-50 lg:ml-64">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div id="comparison-list" class="flex flex-wrap gap-2 text-sm text-gray-700">
+                <!-- Selected items will be displayed here -->
+            </div>
+            <div class="flex space-x-2">
+                <button id="clear-all-btn" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg font-semibold hover:bg-gray-400">Clear All</button>
+                <button id="show-compare-modal-btn" class="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700">Compare (<span id="compare-count">0</span>)</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const coursesContainer = document.getElementById('courses-container');
+        const pathwayButtons = document.querySelectorAll('.pathway-btn');
+        let allCourses = {}; // This will store the fetched data
+        const selectedForComparison = new Set();
+        const comparisonTray = document.getElementById('comparison-tray');
+        const comparisonList = document.getElementById('comparison-list');
+        const compareCount = document.getElementById('compare-count');
+        const compareModal = document.getElementById('compare-modal');
+        const comparisonContent = document.getElementById('comparison-content');
+        const clearAllBtn = document.getElementById('clear-all-btn');
+        const showCompareModalBtn = document.getElementById('show-compare-modal-btn');
+        const pathwayButtonsContainer = document.getElementById('pathway-buttons');
+
+        // --- Helper Functions to Render UI ---
+
+        const createCourseCard = (item) => {
+            const paths = (item.career_paths || []).map(p => `<li>${p}</li>`).join('');
+            const exams = (item.exams || []).map(e => `<li>${e}</li>`).join('');
+            const isSelected = selectedForComparison.has(item.title);
+            return `
+                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 flex flex-col">
+                    <h4 class="text-lg font-bold text-gray-800 mb-2">${item.title}</h4>
+                    <p class="text-gray-600 mb-4 flex-grow">${item.description}</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t">
+                        <div>
+                            <p class="font-semibold text-gray-700 mb-1">Career Paths</p>
+                            <ul class="list-disc list-inside text-sm text-gray-500">${paths}</ul>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700 mb-1">Relevant Exams</p>
+                            <ul class="list-disc list-inside text-sm text-gray-500">${exams}</ul>
+                        </div>
+                    </div>
+                    <button data-course-title="${item.title}" class="compare-btn mt-4 px-4 py-2 rounded-lg font-semibold transition-colors duration-200 ${isSelected ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-blue-600 text-white hover:bg-blue-700'}">
+                        ${isSelected ? 'Remove from Compare' : 'Add to Compare'}
+                    </button>
+                </div>
+            `;
+        };
+        
+        const renderCourses = (pathwayData) => {
+            coursesContainer.innerHTML = '';
+            if (!pathwayData) {
+                coursesContainer.innerHTML = '<p class="text-center text-gray-500 p-8">No data available for this pathway.</p>';
+                return;
+            }
+            for (const category in pathwayData) {
+                const accordionItem = document.createElement('div');
+                accordionItem.className = 'border border-gray-200 rounded-lg overflow-hidden';
+
+                const courses = pathwayData[category];
+                const cardsHtml = courses.map(createCourseCard).join('');
+
+                accordionItem.innerHTML = `
+                    <button class="w-full flex justify-between items-center p-4 text-left bg-gray-50 hover:bg-gray-100 focus:outline-none">
+                        <span class="text-xl font-semibold text-gray-700">${category}</span>
+                        <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div class="p-4 hidden bg-white">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            ${cardsHtml}
+                        </div>
+                    </div>
+                `;
+
+                const toggleButton = accordionItem.querySelector('button');
+                const content = accordionItem.querySelector('.hidden');
+                const arrow = accordionItem.querySelector('svg');
+
+                toggleButton.addEventListener('click', () => {
+                    content.classList.toggle('hidden');
+                    arrow.classList.toggle('rotate-180');
+                });
+
+                coursesContainer.appendChild(accordionItem);
+            }
+            addComparisonListeners();
+        };
+
+        const setActiveButton = (selectedButton) => {
+            pathwayButtons.forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('bg-white', 'text-gray-800');
+            });
+            selectedButton.classList.remove('bg-white', 'text-gray-800');
+            selectedButton.classList.add('bg-blue-600', 'text-white');
+        };
+
+        const updateComparisonTray = () => {
+            comparisonList.innerHTML = '';
+            selectedForComparison.forEach(title => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'flex items-center space-x-1 bg-white border border-gray-300 rounded-full pl-3 pr-1 py-1';
+                itemEl.innerHTML = `
+                    <span class="text-xs font-medium text-gray-700">${title}</span>
+                    <button data-title="${title}" class="remove-from-compare text-gray-500 hover:text-gray-700 p-1 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                `;
+                comparisonList.appendChild(itemEl);
+            });
+            
+            compareCount.textContent = selectedForComparison.size;
+            comparisonTray.classList.toggle('translate-y-full', selectedForComparison.size === 0);
+            
+            // Re-attach listeners for the new remove buttons
+            comparisonList.querySelectorAll('.remove-from-compare').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const titleToRemove = e.currentTarget.dataset.title;
+                    toggleComparison(titleToRemove);
+                });
+            });
+        };
+
+        const toggleComparison = (title) => {
+            if (selectedForComparison.has(title)) {
+                selectedForComparison.delete(title);
+            } else if (selectedForComparison.size < 5) { // Limit to 5 selections
+                selectedForComparison.add(title);
+            } else {
+                alert('You can only compare up to 5 courses at a time.');
+            }
+            updateComparisonTray();
+            updateAllCourseCards();
+        };
+
+        const updateAllCourseCards = () => {
+            document.querySelectorAll('.compare-btn').forEach(btn => {
+                const title = btn.dataset.courseTitle;
+                if (selectedForComparison.has(title)) {
+                    btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                    btn.classList.add('bg-red-500', 'hover:bg-red-600');
+                    btn.textContent = 'Remove from Compare';
+                } else {
+                    btn.classList.remove('bg-red-500', 'hover:bg-red-600');
+                    btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    btn.textContent = 'Add to Compare';
+                }
+            });
+        };
+        
+        const addComparisonListeners = () => {
+            document.querySelectorAll('.compare-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const title = e.target.dataset.courseTitle;
+                    toggleComparison(title);
+                });
+            });
+        };
+        
+        const createComparisonCard = (item) => {
+            const paths = (item.career_paths || []).map(p => `<li class="text-sm text-gray-500">${p}</li>`).join('');
+            const exams = (item.exams || []).map(e => `<li class="text-sm text-gray-500">${e}</li>`).join('');
+            return `
+                <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm relative">
+                    <button data-item-title="${item.title}" class="remove-from-modal absolute top-2 right-2 text-gray-400 hover:text-red-500 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    <h4 class="text-xl font-bold text-gray-800 mb-2">${item.title}</h4>
+                    <p class="text-gray-600 mb-4">${item.description}</p>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="font-semibold text-gray-700 mb-1">Career Paths</p>
+                            <ul class="list-disc list-inside">${paths}</ul>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700 mb-1">Relevant Exams</p>
+                            <ul class="list-disc list-inside">${exams}</ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
+
+        const showCompareModal = () => {
+            if (selectedForComparison.size < 2) {
+                alert('Please select at least 2 courses to compare.');
+                return;
+            }
+            comparisonContent.innerHTML = '';
+            const allCoursesFlat = Object.values(allCourses).flatMap(categories => Object.values(categories).flatMap(courseList => courseList));
+            const itemsToCompare = allCoursesFlat.filter(course => selectedForComparison.has(course.title));
+
+            if (itemsToCompare.length < 2) {
+                hideCompareModal();
+                return;
+            }
+            
+            itemsToCompare.forEach(item => {
+                comparisonContent.innerHTML += createComparisonCard(item);
+            });
+            
+            compareModal.classList.remove('hidden');
+            compareModal.classList.add('flex');
+
+            document.querySelectorAll('.remove-from-modal').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const titleToRemove = e.currentTarget.dataset.itemTitle;
+                    toggleComparison(titleToRemove);
+                    
+                    const newItemsToCompare = allCoursesFlat.filter(course => selectedForComparison.has(course.title));
+                    if (newItemsToCompare.length < 2) {
+                        hideCompareModal();
+                    } else {
+                        showCompareModal(); // Re-render the modal with updated content
+                    }
+                });
+            });
+        };
+        
+        const hideCompareModal = () => {
+            compareModal.classList.add('hidden');
+            compareModal.classList.remove('flex');
+        };
+        window.hideCompareModal = hideCompareModal;
+        
+        const clearAllSelections = () => {
+            selectedForComparison.clear();
+            updateComparisonTray();
+            updateAllCourseCards();
+        };
+
+        pathwayButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const pathway = button.dataset.pathway;
+                setActiveButton(button);
+                renderCourses(allCourses[pathway]);
+            });
+        });
+        
+        clearAllBtn.addEventListener('click', clearAllSelections);
+        showCompareModalBtn.addEventListener('click', showCompareModal);
+        
+        async function fetchAllCourses() {
+            coursesContainer.innerHTML = '<p class="text-center text-gray-500 p-8">Loading course data...</p>';
+            try {
+                const token = localStorage.getItem('authToken');
+                if (!token) {
+                    window.location.href = '/login'; 
+                    return;
+                }
+
+                const response = await fetch('/api/courses', {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.status === 401) {
+                    throw new Error('Unauthorized. Your session may have expired.');
+                }
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                allCourses = await response.json();
+                
+                // --- FIX: Check for URL parameter to filter course data ---
+                const urlParams = new URLSearchParams(window.location.search);
+                const courseTitleParam = urlParams.get('course_title');
+                
+                if (courseTitleParam) {
+                    let foundCourse = null;
+                    const allCoursesFlat = Object.values(allCourses).flatMap(pathways => Object.values(pathways)).flatMap(courseList => courseList);
+                    
+                    // Use a case-insensitive search that checks if the recommended title is part of the full course title
+                    foundCourse = allCoursesFlat.find(c => c.title.toLowerCase().includes(courseTitleParam.toLowerCase()));
+                    
+                    if (foundCourse) {
+                        coursesContainer.innerHTML = `
+                            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                                <h2 class="text-2xl font-bold text-gray-800 mb-4">Recommended Course:</h2>
+                                <h3 class="text-xl font-bold text-blue-700 mb-2">${foundCourse.title}</h3>
+                                <p class="text-gray-600 mb-4">${foundCourse.description}</p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+                                    <div>
+                                        <p class="font-semibold text-gray-700 mb-1">Career Paths</p>
+                                        <ul class="list-disc list-inside text-sm text-gray-500">
+                                            ${(foundCourse.career_paths || []).map(p => `<li>${p}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-gray-700 mb-1">Relevant Exams</p>
+                                        <ul class="list-disc list-inside text-sm text-gray-500">
+                                            ${(foundCourse.exams || []).map(e => `<li>${e}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="mt-6 text-center">
+                                    <a href="{{ url_for('main.page_courses') }}" class="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors inline-block">
+                                        Back to All Courses
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                        pathwayButtonsContainer.classList.add('hidden');
+                    } else {
+                        coursesContainer.innerHTML = `<p class="text-center text-gray-500 p-8">Course not found.</p>`;
+                        pathwayButtonsContainer.classList.remove('hidden');
+                    }
+                    // Hide the comparison tray for this specific view
+                    comparisonTray.classList.add('hidden');
+                } else {
+                    coursesContainer.innerHTML = '<p class="text-center text-gray-500 p-8">Select a pathway above to get started.</p>';
+                    pathwayButtonsContainer.classList.remove('hidden');
+                }
+
+            } catch (error) {
+                console.error('Failed to fetch courses:', error);
+                coursesContainer.innerHTML = `<p class="text-center text-red-500 p-8">Could not load course data. ${error.message}</p>`;
+            }
+        }
+
+        fetchAllCourses();
+    });
+</script>
+{% endblock %}

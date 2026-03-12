@@ -1,0 +1,320 @@
+{
+    "Andhra Pradesh": {
+        "Vijayawada": [
+            {
+                "name": "Velagapudi Ramakrishna Siddhartha Engineering College",
+                "address": "Kanuru, Vijayawada, Andhra Pradesh 520007",
+                "website": "https://www.vrsiddhartha.ac.in/"
+            },
+            {
+                "name": "Prasad V. Potluri Siddhartha Institute of Technology",
+                "address": "Kanuru, Vijayawada, Andhra Pradesh 520007",
+                "website": "https://www.pvpsiddhartha.ac.in/"
+            },
+            {
+                "name": "Andhra Loyola College",
+                "address": "Governorpet, Vijayawada, Andhra Pradesh 520002",
+                "website": "https://www.andhraloyolacollege.ac.in/"
+            }
+        ],
+        "Amaravati": [
+            {
+                "name": "SRM University, AP - Amaravati",
+                "address": "Neerukonda, Mangalagiri Mandal, Guntur District, Amaravati, 522240",
+                "website": "https://srmap.edu.in/"
+            },
+            {
+                "name": "Vellore Institute of Technology, AP University (VIT-AP)",
+                "address": "G-30, Inavolu, Beside AP Secretariat, Amaravati, 522237",
+                "website": "https://vitap.ac.in/"
+            },
+            {
+                "name": "Amrita Vishwa Vidyapeetham, Amravati Campus",
+                "address": "Kuragallu Village, Mangalagiri Mandal, Guntur, Amaravati, 522503",
+                "website": "https://www.amrita.edu/campus/amravati/"
+            }
+        ],
+        "Visakhapatnam": [
+            {
+                "name": "Andhra University College of Engineering",
+                "address": "AU College of Engineering, Andhra University, Visakhapatnam, Andhra Pradesh 530003",
+                "website": "http://auce.andhrauniversity.edu.in/"
+            },
+            {
+                "name": "Gayatri Vidya Parishad College of Engineering",
+                "address": "Madhurawada, Visakhapatnam, Andhra Pradesh 530048",
+                "website": "https://www.gvpce.ac.in/"
+            },
+            {
+                "name": "GITAM Institute of Technology",
+                "address": "Gandhinagar, Rushikonda, Visakhapatnam, Andhra Pradesh 530045",
+                "website": "https://www.gitam.edu/campus/gitam-institute-of-technology-visakhapatnam"
+            }
+        ]
+    },
+    "Jammu and Kashmir": {
+        "Jammu": [
+            {
+                "name": "Indian Institute of Technology Jammu (IIT Jammu)",
+                "address": "Jagti, NH-44, Nagrota, Jammu, 181221",
+                "website": "https://iitjammu.ac.in/"
+            },
+            {
+                "name": "Model Institute of Engineering and Technology (MIET)",
+                "address": "Kot Bhalwal, Jammu, Jammu and Kashmir 181122",
+                "website": "https://www.mietjmu.in/"
+            },
+            {
+                "name": "University of Jammu",
+                "address": "Baba Saheb Ambedkar Road, Jammu, 180006",
+                "website": "https://www.jammuuniversity.ac.in/"
+            }
+        ],
+        "Srinagar": [
+            {
+                "name": "National Institute of Technology Srinagar",
+                "address": "Hazaratbal, Srinagar, Jammu and Kashmir 190006",
+                "website": "http://www.nitsri.ac.in/"
+            },
+            {
+                "name": "University of Kashmir",
+                "address": "Hazratbal, Srinagar, Jammu and Kashmir 190006",
+                "website": "https://www.kashmiruniversity.net/"
+            },
+            {
+                "name": "Sher-e-Kashmir University of Agricultural Sciences and Technology",
+                "address": "Main Campus, Shalimar, Srinagar, Jammu and Kashmir 190025",
+                "website": "https://skuastkashmir.ac.in/"
+            }
+        ],
+        "Leh": [
+            {
+                "name": "University of Ladakh",
+                "address": "Leh, Ladakh 194101",
+                "website": "http://www.universityofladakh.edu.in/"
+            },
+            {
+                "name": "Himalayan Institute of Technology and Management",
+                "address": "Choglamsar, Leh, Ladakh 194101",
+                "website": "N/A"
+            },
+            {
+                "name": "Government Degree College, Khaltse",
+                "address": "Khaltse, Leh, Ladakh 194102",
+                "website": "N/A"
+            }
+        ]
+    },
+    "Delhi": {
+        "New Delhi": [
+            {
+                "name": "Indian Institute of Technology Delhi (IIT Delhi)",
+                "address": "Hauz Khas, New Delhi, Delhi 110016",
+                "website": "https://home.iitd.ac.in/"
+            },
+            {
+                "name": "University of Delhi (DU)",
+                "address": "Benito Juarez Marg, South Campus, South Moti Bagh, New Delhi, 110021",
+                "website": "http://www.du.ac.in/"
+            },
+            {
+                "name": "Netaji Subhas University of Technology (NSUT)",
+                "address": "Azad Hind Fauj Marg, Dwarka Sector-3, Dwarka, New Delhi, 110078",
+                "website": "http://www.nsit.ac.in/"
+            }
+        ],
+        "Delhi": [
+            {
+                "name": "Indraprastha Institute of Information Technology (IIIT Delhi)",
+                "address": "Okhla Industrial Estate, Phase III, New Delhi, Delhi 110020",
+                "website": "https://www.iiitd.ac.in/"
+            },
+            {
+                "name": "Jamia Millia Islamia",
+                "address": "Jamia Nagar, Okhla, New Delhi, Delhi 110025",
+                "website": "https://www.jmi.ac.in/"
+            },
+            {
+                "name": "Guru Gobind Singh Indraprastha University",
+                "address": "Sector 16 C, Dwarka, New Delhi, Delhi 110078",
+                "website": "http://www.ipu.ac.in/"
+            }
+        ],
+        "Greater Noida": [
+            {
+                "name": "Galgotias University",
+                "address": "Plot No. 2, Yamuna Expressway, Greater Noida, Uttar Pradesh 203201",
+                "website": "https://www.galgotiasuniversity.edu.in/"
+            },
+            {
+                "name": "Amity University Noida",
+                "address": "Sector 125, Noida, Uttar Pradesh 201313",
+                "website": "https://www.amity.edu/noida/"
+            },
+            {
+                "name": "Sharda University",
+                "address": "Plot No. 32-34, Knowledge Park III, Greater Noida, Uttar Pradesh 201310",
+                "website": "https://www.sharda.ac.in/"
+            }
+        ]
+    },
+    "Maharashtra": {
+        "Mumbai": [
+            {
+                "name": "Indian Institute of Technology Bombay (IIT Bombay)",
+                "address": "Main Gate Rd, IIT Area, Powai, Mumbai, Maharashtra 400076",
+                "website": "https://www.iitb.ac.in/"
+            },
+            {
+                "name": "Veermata Jijabai Technological Institute (VJTI)",
+                "address": "H R Mahajani Road, Matunga, Mumbai, Maharashtra 400019",
+                "website": "https://www.vjti.ac.in/"
+            },
+            {
+                "name": "Narsee Monjee Institute of Management Studies (NMIMS)",
+                "address": "V. L, Mehta Road, Vile Parle (W), Mumbai, Maharashtra 400056",
+                "website": "https://www.nmims.edu/"
+            }
+        ],
+        "Pune": [
+            {
+                "name": "College of Engineering, Pune (COEP)",
+                "address": "Shivajinagar, Pune, Maharashtra 411005",
+                "website": "https://www.coep.ac.in/"
+            },
+            {
+                "name": "Pune Institute of Computer Technology (PICT)",
+                "address": "Sr. No. 27, Pune-Satara Road, Dhankawadi, Pune, Maharashtra 411043",
+                "website": "http://www.pict.edu/"
+            },
+            {
+                "name": "Fergusson College",
+                "address": "Fergusson College Rd, Shivajinagar, Pune, Maharashtra 411004",
+                "website": "https://www.fergusson.edu/"
+            }
+        ],
+        "Nagpur": [
+            {
+                "name": "Visvesvaraya National Institute of Technology (VNIT)",
+                "address": "South Ambazari Road, Abhyankar Nagar, Nagpur, Maharashtra 440010",
+                "website": "http://vnit.ac.in/"
+            },
+            {
+                "name": "Rashtrasant Tukadoji Maharaj Nagpur University",
+                "address": "Mahatma Jyotiba Phuley Educational Campus, Jamnalal Bajaj Administrative Bldg, Amravati Road, Nagpur, Maharashtra 440033",
+                "website": "https://nagpuruniversity.ac.in/"
+            },
+            {
+                "name": "Laxminarayan Institute of Technology",
+                "address": "Amravati Rd, Shankar Nagar, Nagpur, Maharashtra 440033",
+                "website": "http://www.litnagpur.in/"
+            }
+        ]
+    },
+    "Karnataka": {
+        "Bangalore": [
+            {
+                "name": "Indian Institute of Science (IISc)",
+                "address": "C. V. Raman Road, Bengaluru, Karnataka 560012",
+                "website": "https://www.iisc.ac.in/"
+            },
+            {
+                "name": "RV College of Engineering",
+                "address": "Mysore Road, R.V. Vidyaniketan Post, Bengaluru, Karnataka 560059",
+                "website": "https://www.rvce.edu.in/"
+            },
+            {
+                "name": "Christ University",
+                "address": "Hosur Road, Bengaluru, Karnataka 560029",
+                "website": "https://www.christuniversity.in/"
+            }
+        ],
+        "Mysuru": [
+            {
+                "name": "University of Mysore",
+                "address": "Crawford Hall, Krishnaraja Boulevard Road, Mysuru, Karnataka 570006",
+                "website": "https://www.uni-mysore.ac.in/"
+            },
+            {
+                "name": "Vidyavardhaka College of Engineering",
+                "address": "Gokulam III Stage, Mysuru, Karnataka 570002",
+                "website": "https://vvce.ac.in/"
+            },
+            {
+                "name": "JSS Science and Technology University",
+                "address": "JSS Technical Institutions Campus, Mysuru, Karnataka 570006",
+                "website": "https://jssstuniv.in/"
+            }
+        ],
+        "Mangalore": [
+            {
+                "name": "National Institute of Technology Karnataka (NITK)",
+                "address": "Surathkal, Mangalore, Karnataka 575025",
+                "website": "https://www.nitk.ac.in/"
+            },
+            {
+                "name": "Manipal Institute of Technology",
+                "address": "Manipal, Karnataka 576104",
+                "website": "https://manipal.edu/mit.html"
+            },
+            {
+                "name": "St. Aloysius College",
+                "address": "P.B. No. 720, Light House Hill Road, Mangalore, Karnataka 575003",
+                "website": "https://staloysius.edu.in/"
+            }
+        ]
+    },
+    "Tamil Nadu": {
+        "Chennai": [
+            {
+                "name": "Indian Institute of Technology Madras (IIT Madras)",
+                "address": "Indian Institute of Technology, Madras, Chennai, Tamil Nadu 600036",
+                "website": "https://www.iitm.ac.in/"
+            },
+            {
+                "name": "Anna University",
+                "address": "Guindy, Chennai, Tamil Nadu 600025",
+                "website": "https://www.annauniv.edu/"
+            },
+            {
+                "name": "Madras Christian College",
+                "address": "Tambaram East, Chennai, Tamil Nadu 600059",
+                "website": "https://www.mcc.edu.in/"
+            }
+        ],
+        "Coimbatore": [
+            {
+                "name": "PSG College of Technology",
+                "address": "Avinashi Road, Peelamedu, Coimbatore, Tamil Nadu 641004",
+                "website": "https://www.psgtech.edu/"
+            },
+            {
+                "name": "Amrita Vishwa Vidyapeetham",
+                "address": "Ettimadai, Coimbatore, Tamil Nadu 641112",
+                "website": "https://www.amrita.edu/campus/coimbatore"
+            },
+            {
+                "name": "Coimbatore Institute of Technology",
+                "address": "Civil Aerodrome Post, Coimbatore, Tamil Nadu 641014",
+                "website": "https://www.cit.edu.in/"
+            }
+        ],
+        "Madurai": [
+            {
+                "name": "Madurai Kamaraj University",
+                "address": "Palkalai Nagar, Madurai, Tamil Nadu 625021",
+                "website": "https://mkuniversity.ac.in/"
+            },
+            {
+                "name": "Thiagarajar College of Engineering",
+                "address": "Thiruparankundram, Madurai, Tamil Nadu 625015",
+                "website": "https://www.tce.edu/"
+            },
+            {
+                "name": "Lady Doak College",
+                "address": "Tallakulam, Madurai, Tamil Nadu 625002",
+                "website": "https://www.ladydoak.org/"
+            }
+        ]
+    }
+}

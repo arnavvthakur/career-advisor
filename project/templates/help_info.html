@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+
+{% block title %}Help & Info{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="bg-gradient-to-r from-indigo-500 to-indigo-700 text-white p-8 rounded-xl shadow-lg mb-8 text-center">
+        <h1 class="text-4xl font-bold mb-2">About CareerPath Pro</h1>
+        <p class="text-lg opacity-90">Your guide to a clear and confident future.</p>
+    </div>
+
+    <!-- About Us Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-10">
+        <div class="md:col-span-2 lg:col-span-3 bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4 border-b pb-2">Our Mission</h2>
+            <p class="text-gray-600 leading-relaxed mb-4">
+                CareerPath Pro was born out of a critical need to bridge the gap between academic confusion and career clarity. We believe every student deserves access to reliable, personalized guidance. Our mission is to empower you with the knowledge to make informed academic decisions.
+            </p>
+            <p class="text-gray-600 leading-relaxed">
+                The decline in student enrollment in government degree colleges is not a consequence of poor infrastructure or lack of teaching resources. At the heart of the problem lies a critical gap in awareness - most students and often their parents do not understand the importance of graduation, what career opportunities different degree courses unlock, or how to choose a subject stream based on personal interest and future prospects.
+            </p>
+        </div>
+
+        <div class="bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Our Vision</h2>
+            <p class="text-gray-600 leading-relaxed mb-4">
+                We envision a future where every student has access to personalized career guidance that helps them unlock their full potential. Through our platform, we aim to:
+            </p>
+            <ul class="list-disc list-inside text-gray-600 space-y-2">
+                <li>Improve enrollment in government degree colleges by helping students make informed academic decisions</li>
+                <li>Reduce dropouts after Class 10 and 12 by providing clear career pathways</li>
+                <li>Empower students with access to reliable, localized career guidance</li>
+                <li>Strengthen the perception of government colleges as viable career-building institutions</li>
+            </ul>
+        </div>
+
+        <div class="bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Key Features</h2>
+            <ul class="list-disc list-inside text-gray-600 space-y-2">
+                <li><strong>Aptitude Assessment:</strong> Personalized career recommendations based on your strengths and interests</li>
+                <li><strong>College Directory:</strong> Comprehensive information about government colleges near you</li>
+                <li><strong>Course Explorer:</strong> Detailed information about various degree programs and career paths</li>
+                <li><strong>AI Assistant:</strong> Get instant answers to your career-related questions</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Team & Contact Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Our Team</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <strong class="font-semibold text-gray-800">Arnav Thakur</strong>
+                    <p class="text-sm text-gray-600">Lead Developer</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <strong class="font-semibold text-gray-800">Ashmit Yadav</strong>
+                    <p class="text-sm text-gray-600">UX Designer</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <strong class="font-semibold text-gray-800">HarshRaj Nago</strong>
+                    <p class="text-sm text-gray-600">Data Scientist</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <strong class="font-semibold text-gray-800">Rajdeep Dutta</strong>
+                    <p class="text-sm text-gray-600">Product Manager</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <strong class="font-semibold text-gray-800">Reshmi Rani</strong>
+                    <p class="text-sm text-gray-600">Marketing Head</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <strong class="font-semibold text-gray-800">Ayush Pratap Singh</strong>
+                    <p class="text-sm text-gray-600">Content Strategist</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Contact Us</h2>
+            <div class="space-y-4 text-gray-600">
+                <p>
+                    <strong class="block text-gray-800">Email:</strong>
+                    support@careerpathpro.com
+                </p>
+                <p>
+                    <strong class="block text-gray-800">Phone:</strong>
+                    +91 98765 43210
+                </p>
+                <p>
+                    <strong class="block text-gray-800">Address:</strong>
+                    CareerPath Pro Headquarters,<br>123 Career Avenue, Tech Hub, <br>Amaravati, Andhra Pradesh 522240
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

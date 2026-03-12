@@ -1,0 +1,88 @@
+{
+    "scholarships": [
+        {
+            "title": "National Scholarship Portal (NSP)",
+            "eligibility": "For students of all categories and states across India. Central Sector Schemes and UGC/AICTE Schemes.",
+            "deadline": "Varies by scheme",
+            "link": "https://scholarships.gov.in/"
+        },
+        {
+            "title": "Prime Minister's Special Scholarship Scheme (PMSSS)",
+            "eligibility": "For students from Jammu & Kashmir and Ladakh pursuing higher education in other parts of India.",
+            "deadline": "2026-10-31",
+            "link": "https://www.aicte-jk-scholarship-gov.in/"
+        },
+        {
+            "title": "Central Sector Scheme of Scholarship for College and University Students",
+            "eligibility": "National-level merit-based scholarship for students with a family income below ₹8 lakh per annum.",
+            "deadline": "2026-11-30",
+            "link": "https://scholarships.gov.in/"
+        },
+        {
+            "title": "Merit-cum-Means Scholarship",
+            "eligibility": "For minority communities (Muslims, Sikhs, Christians, etc.) across India with family income not exceeding ₹2.5 lakh per annum.",
+            "deadline": "2026-10-15",
+            "link": "https://scholarships.gov.in/"
+        },
+        {
+            "title": "Post Matric Scholarship for OBC Students (Uttar Pradesh)",
+            "eligibility": "For OBC students who are domiciles of Uttar Pradesh and have passed Class 10.",
+            "deadline": "2026-12-01",
+            "link": "https://scholarship.up.gov.in/"
+        },
+        {
+            "title": "E-PASS Scholarship (Andhra Pradesh)",
+            "eligibility": "For students from Andhra Pradesh belonging to SC, ST, BC, EBC, Differently Abled categories. Family income must be low.",
+            "deadline": "2026-11-20",
+            "link": "https://jnanabhumi.ap.gov.in/"
+        },
+        {
+            "title": "Post-Matric Scholarship Scheme (West Bengal)",
+            "eligibility": "For students of West Bengal who have passed the matriculation or higher secondary examination.",
+            "deadline": "2026-12-31",
+            "link": "https://oasis.gov.in/"
+        },
+        {
+            "title": "Mukhyamantri Medhavi Vidyarthi Yojana (Madhya Pradesh)",
+            "eligibility": "For meritorious students of Madhya Pradesh who have secured good marks in Class 12.",
+            "deadline": "2026-10-15",
+            "link": "https://scholarshipportal.mp.nic.in/"
+        },
+        {
+            "title": "Minority Scholarship (Maharashtra)",
+            "eligibility": "For minority students (Muslim, Christian, Sikh, etc.) who are domiciles of Maharashtra.",
+            "deadline": "2026-11-05",
+            "link": "https://mahadbtmahait.gov.in/"
+        },
+        {
+            "title": "Karnataka State Scholarship Portal",
+            "eligibility": "For students of Karnataka belonging to various categories including SC/ST/OBC.",
+            "deadline": "2026-10-25",
+            "link": "https://ssp.postmatric.karnataka.gov.in/"
+        },
+        {
+            "title": "Chief Minister's Scholarship Scheme (Tamil Nadu)",
+            "eligibility": "For students from Tamil Nadu based on merit and financial need.",
+            "deadline": "2026-11-10",
+            "link": "https://www.tn.gov.in/scheme/123"
+        },
+        {
+            "title": "Bihar Post Matric Scholarship",
+            "eligibility": "For students who are domiciles of Bihar belonging to SC, ST, BC, and EBC categories.",
+            "deadline": "2026-10-20",
+            "link": "https://pmsonline.bih.nic.in/"
+        },
+        {
+            "title": "UP Scholarship",
+            "eligibility": "For students of Uttar Pradesh from all categories. Family income is a key factor.",
+            "deadline": "2026-11-15",
+            "link": "https://scholarship.up.gov.in/"
+        },
+        {
+            "title": "AICTE Pragati Scholarship",
+            "eligibility": "National-level scholarship for meritorious girls pursuing technical education.",
+            "deadline": "2026-10-31",
+            "link": "https://www.aicte-india.org/schemes/students-development-schemes/PragatiScholarships"
+        }
+    ]
+}
